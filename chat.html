@@ -49,13 +49,29 @@
 
         #turnstile-container {
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: 100px;
         }
         #turnstile-container.verified {
             opacity: 0;
             transform: translateY(20px) scale(0.95);
             pointer-events: none;
             height: 0;
+            min-height: 0;
             margin-bottom: 0;
+            padding: 0;
+        }
+
+        /* Cursor blinking effect for streaming */
+        .streaming::after {
+            content: '▊';
+            display: inline-block;
+            margin-left: 2px;
+            color: #3b82f6;
+            animation: blink 0.8s infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
         }
     </style>
 </head>
@@ -107,8 +123,8 @@
     <footer class="shrink-0 p-4 md:pb-8 z-20 bg-gradient-to-t from-[#020617] via-[#020617] to-transparent pt-10">
         <div class="max-w-3xl mx-auto relative">
             
-            <div id="turnstile-container" class="flex flex-col items-center mb-4 overflow-hidden h-[70px]">
-                <div class="bg-blue-600/10 border border-blue-500/20 rounded-xl px-4 py-2 flex items-center gap-3 mb-2">
+            <div id="turnstile-container" class="flex flex-col items-center mb-6 overflow-visible">
+                <div class="bg-blue-600/10 border border-blue-500/20 rounded-xl px-4 py-2 flex items-center gap-3 mb-4">
                     <i data-lucide="shield" class="w-3.5 h-3.5 text-blue-400"></i>
                     <span class="text-[11px] font-bold text-blue-400 uppercase tracking-tighter">Security Verification Required</span>
                 </div>
@@ -152,7 +168,6 @@
 
         const WORKER_URL = "https://israelgpt.stelies2020.workers.dev";
         window.messageStore = {};
-        window.currentAudio = null;
 
         modeSelect.addEventListener('change', () => {
             const iconName = modeSelect.value === 'ask' ? 'message-square' : 'languages';
@@ -197,10 +212,10 @@
 
         function addUserMessage(text) {
             const div = document.createElement('div');
-            div.className = 'flex justify-end msg-animate w-full mb-2'; 
+            div.className = 'flex w-full mb-4 px-2'; 
             
             div.innerHTML = `
-                <div class="bg-blue-600 text-white px-4 py-3 rounded-2xl rounded-tr-none shadow-lg text-[14px] leading-relaxed whitespace-pre-wrap break-words w-fit max-w-[85%]">
+                <div class="bg-blue-600 text-white px-4 py-3 rounded-2xl rounded-tr-none shadow-lg text-[14px] leading-relaxed whitespace-pre-wrap break-words w-fit max-w-[85%] ml-auto msg-animate">
                     ${escapeHTML(text)}
                 </div>
             `;
@@ -208,9 +223,30 @@
             scrollToBottom();
         }
 
+        // --- NEW STREAMING ENGINE ---
+        async function streamText(element, fullText, messageId) {
+            const contentDiv = element.querySelector('.content-area');
+            const actionsDiv = element.querySelector('.actions-area');
+            contentDiv.classList.add('streaming');
+            
+            let currentText = "";
+            const charDelay = 15; // Speed of typing in ms
+            
+            for (let i = 0; i < fullText.length; i++) {
+                currentText += fullText[i];
+                contentDiv.innerHTML = parseMarkdown(currentText);
+                scrollToBottom();
+                await new Promise(r => setTimeout(r, charDelay));
+            }
+            
+            contentDiv.classList.remove('streaming');
+            actionsDiv.style.opacity = "1";
+            actionsDiv.classList.remove('hidden');
+        }
+
         function addBotMessage(text, isError = false) {
             const div = document.createElement('div');
-            div.className = 'flex gap-4 msg-animate w-full group relative mb-4';
+            div.className = 'flex gap-4 msg-animate w-full group relative mb-6';
             const statusColor = isError ? 'text-red-400' : 'text-blue-400';
             const bgStyle = isError ? 'bg-red-950/20 border-red-900/50' : 'bg-slate-900 border-white/5';
             
@@ -224,11 +260,11 @@
                         <div class="${statusColor} font-bold text-[10px] uppercase tracking-wider mb-2">
                             ${isError ? 'System Error' : 'IsraelGPT'}
                         </div>
-                        <div class="whitespace-pre-wrap break-words">${parseMarkdown(text)}</div>
+                        <div class="content-area whitespace-pre-wrap break-words"></div>
                     </div>
                     
                     ${!isError ? `
-                    <div class="flex items-center gap-3 py-2 px-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    <div class="actions-area flex items-center gap-3 py-2 px-2 opacity-0 transition-opacity duration-200 hidden">
                         <span class="text-[10px] text-slate-600 font-medium">Just now</span>
                         <div class="w-1 h-1 rounded-full bg-slate-800"></div>
                         
@@ -236,16 +272,18 @@
                             <i data-lucide="copy" class="w-3.5 h-3.5"></i>
                             <span class="hidden sm:inline">Copy</span>
                         </button>
-                        
-                        <button onclick="playTTS('${messageId}', this)" class="text-slate-500 hover:text-blue-400 transition-colors flex items-center gap-1 text-[11px] font-medium p-1">
-                            <i data-lucide="volume-2" class="w-3.5 h-3.5 tts-icon"></i>
-                            <span class="hidden sm:inline">Read</span>
-                        </button>
                     </div>` : ''}
                 </div>
             `;
             chatBox.appendChild(div);
             lucide.createIcons();
+            
+            if (isError) {
+                div.querySelector('.content-area').innerHTML = parseMarkdown(text);
+            } else {
+                streamText(div, text, messageId);
+            }
+            
             scrollToBottom();
         }
 
@@ -261,49 +299,6 @@
             } catch (err) {
                 console.error("Copy failed");
             }
-        }
-
-        async function playTTS(id, btnElement) {
-            const text = window.messageStore[id];
-            if (!text) return;
-            const icon = btnElement.querySelector('.tts-icon');
-
-            if (window.currentAudio && !window.currentAudio.paused) {
-                window.currentAudio.pause();
-                window.currentAudio = null;
-                icon.setAttribute('data-lucide', 'volume-2');
-                lucide.createIcons();
-                return;
-            }
-
-            icon.setAttribute('data-lucide', 'square');
-            icon.classList.add('text-blue-400');
-            lucide.createIcons();
-
-            const chunks = text.match(/[^.!?\n]+[.!?\n]+|\s*[^.!?\n]+$/g) || [text]; 
-            let i = 0;
-
-            function playNext() {
-                if (i >= chunks.length) {
-                    icon.setAttribute('data-lucide', 'volume-2');
-                    icon.classList.remove('text-blue-400');
-                    lucide.createIcons();
-                    window.currentAudio = null;
-                    return;
-                }
-                
-                const chunkText = chunks[i].trim();
-                if(!chunkText) { i++; playNext(); return; }
-
-                const url = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=he&q=${encodeURIComponent(chunkText)}`;
-                const audio = new Audio(url);
-                window.currentAudio = audio;
-
-                audio.onended = () => { i++; playNext(); };
-                audio.onerror = () => { i++; playNext(); };
-                audio.play().catch(() => { i++; playNext(); });
-            }
-            playNext();
         }
 
         async function sendMessage() {

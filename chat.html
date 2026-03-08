@@ -22,8 +22,7 @@
             border: 1px solid rgba(30, 58, 138, 0.3);
         }
 
-        /* Better Custom Scrollbar */
-        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #1e40af; border-radius: 20px; }
 
@@ -33,19 +32,24 @@
         }
         .msg-animate { animation: messageIn 0.25s ease-out forwards; }
 
-        /* Custom Selector Styling */
         .custom-select {
             appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%233b82f6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='激8 9l4 4 4-4'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%233b82f6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M8 9l4 4 4-4'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 0.5rem center;
             background-size: 1.25rem;
         }
+
+        .markdown-body strong { color: #f8fafc; font-weight: 700; }
+        .markdown-body em { font-style: italic; }
+        .markdown-body del { text-decoration: line-through; opacity: 0.6; }
+        .markdown-body .underline { text-decoration: underline; }
+        .markdown-body a { color: #60a5fa; text-decoration: none; }
+        .markdown-body a:hover { text-decoration: underline; }
     </style>
 </head>
 <body class="flex flex-col h-screen overflow-hidden">
 
-    <!-- Premium Navbar -->
     <header class="shrink-0 z-20 flex justify-between items-center px-6 py-4 border-b border-white/5 bg-slate-950/50 backdrop-blur-xl">
         <div class="flex items-center gap-4">
             <div class="relative group">
@@ -67,37 +71,20 @@
         </a>
     </header>
 
-    <!-- Chat Viewport -->
     <main id="chat-box" class="flex-grow overflow-y-auto px-4 py-8 md:px-0 scroll-smooth">
-        <div class="max-w-3xl mx-auto space-y-8">
-            
-            <!-- System Welcome -->
+        <div class="max-w-3xl mx-auto space-y-8" id="chat-container">
             <div class="flex flex-col items-center justify-center py-6">
                 <div class="w-12 h-12 rounded-2xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center mb-4">
                     <i data-lucide="shield-check" class="w-6 h-6 text-blue-500"></i>
                 </div>
                 <p class="text-xs font-semibold text-slate-500 uppercase tracking-[0.2em]">End-to-end Encrypted</p>
             </div>
-
-            <!-- Bot Entry -->
-            <div class="flex gap-4 msg-animate">
-                <img src="logo2.jpg" class="w-9 h-9 rounded-full object-cover shrink-0 border border-white/10 shadow-lg">
-                <div class="space-y-2">
-                    <div class="bg-slate-900 border border-white/5 p-4 rounded-2xl rounded-tl-none shadow-xl text-slate-200 text-sm leading-relaxed max-w-md">
-                        <p class="text-blue-400 font-bold text-[11px] uppercase tracking-wider mb-1">IsraelGPT</p>
-                        I'm here. What do you need, bradar?
-                    </div>
-                    <p class="text-[10px] text-slate-600 ml-1">Just now</p>
-                </div>
-            </div>
-
         </div>
     </main>
 
-    <!-- Typing Indicator -->
     <div id="typing-indicator" class="hidden max-w-3xl mx-auto w-full px-4 mb-4">
         <div class="flex gap-4 items-center opacity-60">
-            <img src="logo2.jpg" class="w-7 h-7 rounded-full object-cover grayscale">
+            <img src="logo2.jpg" onerror="this.onerror=null;this.src='https://placehold.co/48x48/0038b8/FFFFFF?text=IL'" class="w-7 h-7 rounded-full object-cover grayscale">
             <div class="flex gap-1">
                 <span class="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce"></span>
                 <span class="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce [animation-delay:0.2s]"></span>
@@ -106,19 +93,13 @@
         </div>
     </div>
 
-    <!-- Input Center -->
-    <footer class="shrink-0 p-4 md:pb-8">
+    <footer class="shrink-0 p-4 md:pb-8 z-20 bg-gradient-to-t from-[#020617] via-[#020617] to-transparent pt-10">
         <div class="max-w-3xl mx-auto">
-            
-            <!-- Security Check (Turnstile) -->
             <div class="flex justify-center mb-4">
                 <div class="cf-turnstile" data-sitekey="0x4AAAAAACoAQz2FBxxhVOSD" data-theme="dark" data-compact="true"></div>
             </div>
 
-            <!-- Main Input Bar -->
             <div class="glass-panel p-2 rounded-[24px] shadow-2xl flex items-end gap-2 group transition-all focus-within:ring-2 focus-within:ring-blue-500/40">
-                
-                <!-- Refined Mode Selector -->
                 <div class="relative shrink-0">
                     <select id="mode-select" class="custom-select h-12 pl-4 pr-10 bg-slate-800/50 hover:bg-slate-800 border border-white/5 text-xs font-bold text-blue-400 rounded-[18px] focus:outline-none transition-colors cursor-pointer outline-none">
                         <option value="ask">CHAT</option>
@@ -126,11 +107,9 @@
                     </select>
                 </div>
 
-                <!-- Text Area -->
                 <textarea id="user-input" rows="1" class="flex-grow bg-transparent text-white text-[15px] px-3 py-3.5 resize-none focus:outline-none placeholder:text-slate-500 max-h-40" placeholder="Message IsraelGPT..."></textarea>
                 
-                <!-- Action Button -->
-                <button id="send-btn" class="h-12 w-12 bg-blue-600 hover:bg-blue-500 text-white rounded-[18px] transition-all flex items-center justify-center shadow-lg shadow-blue-600/20 active:scale-90 disabled:opacity-40">
+                <button id="send-btn" class="h-12 w-12 bg-blue-600 hover:bg-blue-500 text-white rounded-[18px] transition-all flex items-center justify-center shadow-lg shadow-blue-600/20 active:scale-90 disabled:opacity-40 shrink-0">
                     <i data-lucide="arrow-up" class="w-6 h-6"></i>
                 </button>
             </div>
@@ -144,32 +123,53 @@
     <script>
         lucide.createIcons();
         
-        const chatBox = document.getElementById('chat-box').firstElementChild;
+        const chatBox = document.getElementById('chat-container');
+        const mainScrollBox = document.getElementById('chat-box');
         const inputField = document.getElementById('user-input');
         const sendBtn = document.getElementById('send-btn');
         const modeSelect = document.getElementById('mode-select');
         const typingIndicator = document.getElementById('typing-indicator');
 
-        // REPLACE WITH YOUR CLOUDFLARE WORKER URL
         const WORKER_URL = "https://israelgpt.stelies2020.workers.dev";
+        window.messageStore = {};
+        window.currentAudio = null;
 
-        // Auto-resize
+        function parseMarkdown(text) {
+            let parsed = escapeHTML(text);
+            parsed = parsed.replace(/```([\s\S]*?)```/g, '<pre class="bg-slate-950 p-3 rounded-xl my-2 overflow-x-auto text-[13px] font-mono border border-white/10 text-blue-300 shadow-inner max-w-full"><code>$1</code></pre>');
+            parsed = parsed.replace(/`([^`]+)`/g, '<code class="bg-slate-900 text-blue-300 px-1.5 py-0.5 rounded-md text-[13px] font-mono border border-white/10">$1</code>');
+            parsed = parsed.replace(/\*\*\*([^*]+)\*\*\*/g, '<em><strong>$1</strong></em>');
+            parsed = parsed.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+            parsed = parsed.replace(/__([^_]+)__/g, '<span class="underline">$1</span>');
+            parsed = parsed.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+            parsed = parsed.replace(/\b_([^_]+)_\b/g, '<em>$1</em>');
+            parsed = parsed.replace(/~~([^~]+)~~/g, '<del>$1</del>');
+            parsed = parsed.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">$1</a>');
+            return parsed;
+        }
+
         inputField.addEventListener('input', function() {
             this.style.height = 'auto';
             this.style.height = (this.scrollHeight) + 'px';
         });
 
         function scrollToBottom() {
-            const container = document.getElementById('chat-box');
-            container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+            mainScrollBox.scrollTo({ top: mainScrollBox.scrollHeight, behavior: 'smooth' });
+        }
+
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, tag => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+            }[tag] || tag));
         }
 
         function addUserMessage(text) {
             const div = document.createElement('div');
-            div.className = 'flex justify-end msg-animate';
+            div.className = 'flex justify-end msg-animate w-full'; 
+            
             div.innerHTML = `
-                <div class="max-w-[85%] space-y-2">
-                    <div class="bg-blue-600 text-white p-4 rounded-2xl rounded-tr-none shadow-lg text-sm leading-relaxed whitespace-pre-wrap">
+                <div class="flex flex-col items-end max-w-[85%]">
+                    <div class="bg-blue-600 text-white px-4 py-3 rounded-2xl rounded-tr-none shadow-lg text-[14px] leading-relaxed whitespace-pre-wrap break-words inline-block text-left min-w-0">
                         ${escapeHTML(text)}
                     </div>
                 </div>
@@ -180,29 +180,135 @@
 
         function addBotMessage(text, isError = false) {
             const div = document.createElement('div');
-            div.className = 'flex gap-4 msg-animate';
+            div.className = 'flex gap-4 msg-animate w-full group relative';
             const statusColor = isError ? 'text-red-400' : 'text-blue-400';
             const bgStyle = isError ? 'bg-red-950/20 border-red-900/50' : 'bg-slate-900 border-white/5';
+            
+            const messageId = "msg_" + Math.random().toString(36).substr(2, 9);
+            window.messageStore[messageId] = text;
 
             div.innerHTML = `
-                <img src="logo2.jpg" class="w-9 h-9 rounded-full object-cover shrink-0 border border-white/10 shadow-lg">
-                <div class="space-y-2">
-                    <div class="${bgStyle} border p-4 rounded-2xl rounded-tl-none shadow-xl text-slate-200 text-sm leading-relaxed max-w-md">
-                        <p class="${statusColor} font-bold text-[11px] uppercase tracking-wider mb-1">
+                <img src="logo2.jpg" onerror="this.onerror=null;this.src='https://placehold.co/48x48/0038b8/FFFFFF?text=IL'" class="w-9 h-9 rounded-full object-cover shrink-0 border border-white/10 shadow-lg mt-1">
+                <div class="flex flex-col items-start gap-1.5 max-w-[85%]">
+                    <div class="${bgStyle} border px-4 py-3.5 rounded-2xl rounded-tl-none shadow-xl text-slate-200 text-[14.5px] leading-relaxed whitespace-pre-wrap break-words markdown-body inline-block min-w-0">
+                        <div class="${statusColor} font-bold text-[10px] uppercase tracking-wider mb-2 block">
                             ${isError ? 'System Error' : 'IsraelGPT'}
-                        </p>
-                        ${escapeHTML(text)}
+                        </div>
+                        <div class="text-left">${parseMarkdown(text)}</div>
                     </div>
+                    
+                    ${!isError ? `
+                    <div class="flex items-center gap-3 px-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 w-fit">
+                        <span class="text-[10px] text-slate-600 font-medium">Just now</span>
+                        <div class="w-1 h-1 rounded-full bg-slate-800"></div>
+                        
+                        <button onclick="copyMsg('${messageId}', this)" class="text-slate-500 hover:text-white transition-colors flex items-center gap-1 text-[11px] font-medium" title="Copy text">
+                            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                            <span class="copy-text hidden sm:inline">Copy</span>
+                        </button>
+                        
+                        <button onclick="playTTS('${messageId}', this)" class="text-slate-500 hover:text-blue-400 transition-colors flex items-center gap-1 text-[11px] font-medium tts-btn" title="Read aloud">
+                            <i data-lucide="volume-2" class="w-3.5 h-3.5 tts-icon"></i>
+                            <span class="hidden sm:inline">Read</span>
+                        </button>
+                    </div>` : ''}
                 </div>
             `;
             chatBox.appendChild(div);
+            lucide.createIcons();
             scrollToBottom();
         }
 
-        function escapeHTML(str) {
-            return str.replace(/[&<>'"]/g, tag => ({
-                '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
-            }[tag] || tag));
+        async function copyMsg(id, btnElement) {
+            const text = window.messageStore[id];
+            if (!text) return;
+            
+            try {
+                await navigator.clipboard.writeText(text);
+                visualCopySuccess(btnElement);
+            } catch (err) {
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand("copy");
+                document.body.removeChild(textArea);
+                visualCopySuccess(btnElement);
+            }
+        }
+
+        function visualCopySuccess(btnElement) {
+            const originalHTML = btnElement.innerHTML;
+            btnElement.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400"></i><span class="text-emerald-400 hidden sm:inline">Copied</span>`;
+            lucide.createIcons();
+            setTimeout(() => {
+                btnElement.innerHTML = originalHTML;
+                lucide.createIcons();
+            }, 2000);
+        }
+
+        async function playTTS(id, btnElement) {
+            const text = window.messageStore[id];
+            if (!text) return;
+
+            const icon = btnElement.querySelector('.tts-icon');
+
+            if (window.currentAudio && !window.currentAudio.paused) {
+                window.currentAudio.pause();
+                icon.setAttribute('data-lucide', 'volume-2');
+                lucide.createIcons();
+                return;
+            }
+
+            icon.setAttribute('data-lucide', 'square');
+            icon.classList.add('text-blue-400');
+            lucide.createIcons();
+
+            const chunks = text.match(/[^.!?\n]+[.!?\n]+|\s*[^.!?\n]+$/g) || [text]; 
+            let i = 0;
+
+            function playNext() {
+                if (i >= chunks.length) {
+                    resetTTSIcon(icon);
+                    return;
+                }
+                
+                const chunkText = chunks[i].trim();
+                if(!chunkText) {
+                    i++;
+                    playNext();
+                    return;
+                }
+
+                const url = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=en&q=${encodeURIComponent(chunkText)}`;
+                const audio = new Audio(url);
+                window.currentAudio = audio;
+
+                audio.onended = () => { i++; playNext(); };
+                
+                audio.onerror = () => {
+                    const utterance = new SpeechSynthesisUtterance(chunkText);
+                    const voices = window.speechSynthesis.getVoices();
+                    const gVoice = voices.find(v => v.name.includes('Google'));
+                    if (gVoice) utterance.voice = gVoice;
+                    
+                    window.speechSynthesis.speak(utterance);
+                    utterance.onend = () => { i++; playNext(); };
+                };
+
+                audio.play().catch(() => {
+                    const utterance = new SpeechSynthesisUtterance(chunkText);
+                    window.speechSynthesis.speak(utterance);
+                    utterance.onend = () => { i++; playNext(); };
+                });
+            }
+            playNext();
+        }
+
+        function resetTTSIcon(icon) {
+            icon.setAttribute('data-lucide', 'volume-2');
+            icon.classList.remove('text-blue-400');
+            lucide.createIcons();
         }
 
         async function sendMessage() {
@@ -252,6 +358,13 @@
                 sendMessage(); 
             }
         });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                addBotMessage("I'm here. What do you need, bradar?");
+            }, 300);
+        });
+
     </script>
 </body>
 </html>

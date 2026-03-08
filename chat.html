@@ -131,6 +131,11 @@
                 <div class="cf-turnstile" data-sitekey="0x4AAAAAACoAQz2FBxxhVOSD" data-theme="dark" data-compact="true" data-callback="onTurnstileSuccess"></div>
             </div>
 
+            <!-- Character counter -->
+            <div class="flex justify-end px-4 mb-1">
+                <span id="char-counter" class="text-[10px] font-medium text-slate-500 tracking-wider">0 / 2000</span>
+            </div>
+
             <div class="glass-panel p-2 rounded-[24px] shadow-2xl flex items-end gap-2 group transition-all focus-within:ring-2 focus-within:ring-blue-500/40">
                 <div class="relative shrink-0 flex items-center bg-slate-800/50 rounded-[18px] border border-white/5 overflow-hidden focus-within:bg-slate-800 transition-colors">
                     <div id="mode-icon-container" class="pl-3.5 text-blue-400 flex items-center">
@@ -142,7 +147,8 @@
                     </select>
                 </div>
 
-                <textarea id="user-input" rows="1" class="flex-grow bg-transparent text-white text-[15px] px-3 py-3.5 resize-none focus:outline-none placeholder:text-slate-500 max-h-40" placeholder="Message IsraelGPT..."></textarea>
+                <!-- ADDED maxlength="2000" HERE -->
+                <textarea id="user-input" rows="1" maxlength="2000" class="flex-grow bg-transparent text-white text-[15px] px-3 py-3.5 resize-none focus:outline-none placeholder:text-slate-500 max-h-40" placeholder="Message IsraelGPT..."></textarea>
                 
                 <button id="send-btn" class="h-12 w-12 bg-blue-600 hover:bg-blue-500 text-white rounded-[18px] transition-all flex items-center justify-center shadow-lg shadow-blue-600/20 active:scale-90 disabled:opacity-40 shrink-0">
                     <i data-lucide="arrow-up" class="w-6 h-6"></i>
@@ -165,6 +171,7 @@
         const modeSelect = document.getElementById('mode-select');
         const modeIcon = document.getElementById('mode-icon');
         const typingIndicator = document.getElementById('typing-indicator');
+        const charCounter = document.getElementById('char-counter');
 
         const WORKER_URL = "https://israelgpt.stelies2020.workers.dev";
         window.messageStore = {};
@@ -198,6 +205,19 @@
         inputField.addEventListener('input', function() {
             this.style.height = 'auto';
             this.style.height = (this.scrollHeight) + 'px';
+            
+            // Update the character counter
+            const currentLength = this.value.length;
+            charCounter.textContent = `${currentLength} / 2000`;
+            
+            // Change color if approaching the limit
+            if (currentLength >= 1950) {
+                charCounter.classList.add('text-red-400');
+                charCounter.classList.remove('text-slate-500');
+            } else {
+                charCounter.classList.remove('text-red-400');
+                charCounter.classList.add('text-slate-500');
+            }
         });
 
         function scrollToBottom() {
@@ -316,6 +336,10 @@
             addUserMessage(text);
             inputField.value = '';
             inputField.style.height = 'auto';
+            charCounter.textContent = '0 / 2000'; // Reset counter
+            charCounter.classList.remove('text-red-400');
+            charCounter.classList.add('text-slate-500');
+            
             sendBtn.disabled = true;
             typingIndicator.classList.remove('hidden');
             scrollToBottom();

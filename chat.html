@@ -7,18 +7,34 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <!-- Simplex Noise for the Wave Background -->
+    <script src="https://cdn.jsdelivr.net/npm/simplex-noise@2.4.0/simplex-noise.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
         
         body { 
             font-family: 'Inter', sans-serif; 
-            background-color: #020617;
+            background-color: #000000;
             color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Wave Background Styling */
+        #wave-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            background-color: #000000;
         }
 
         .glass-panel {
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(12px);
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(16px);
             border: 1px solid rgba(30, 58, 138, 0.3);
         }
 
@@ -43,25 +59,18 @@
         .markdown-body strong { color: #f8fafc; font-weight: 700; }
         .markdown-body em { font-style: italic; }
         .markdown-body del { text-decoration: line-through; opacity: 0.6; }
-        .markdown-body .underline { text-decoration: underline; }
         .markdown-body a { color: #60a5fa; text-decoration: none; }
-        .markdown-body a:hover { text-decoration: underline; }
-
+        
         #turnstile-container {
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            min-height: 100px;
         }
         #turnstile-container.verified {
             opacity: 0;
             transform: translateY(20px) scale(0.95);
             pointer-events: none;
             height: 0;
-            min-height: 0;
-            margin-bottom: 0;
-            padding: 0;
         }
 
-        /* Cursor blinking effect for streaming */
         .streaming::after {
             content: '▊';
             display: inline-block;
@@ -73,11 +82,22 @@
             0%, 100% { opacity: 1; }
             50% { opacity: 0; }
         }
+
+        /* Overlay content to be above waves */
+        .ui-layer {
+            position: relative;
+            z-index: 10;
+        }
     </style>
 </head>
 <body class="flex flex-col h-screen overflow-hidden">
 
-    <header class="shrink-0 z-20 flex justify-between items-center px-6 py-4 border-b border-white/5 bg-slate-950/50 backdrop-blur-xl">
+    <!-- Interactive Background -->
+    <div id="wave-container">
+        <svg id="wave-svg" class="w-full h-full block"></svg>
+    </div>
+
+    <header class="ui-layer shrink-0 flex justify-between items-center px-6 py-4 border-b border-white/5 bg-black/40 backdrop-blur-md">
         <div class="flex items-center gap-4">
             <div class="relative group">
                 <div class="absolute -inset-1 bg-blue-600 rounded-full blur opacity-20 group-hover:opacity-40 transition"></div>
@@ -98,7 +118,7 @@
         </a>
     </header>
 
-    <main id="chat-box" class="flex-grow overflow-y-auto px-4 py-8 md:px-0 scroll-smooth">
+    <main id="chat-box" class="ui-layer flex-grow overflow-y-auto px-4 py-8 md:px-0 scroll-smooth">
         <div class="max-w-3xl mx-auto space-y-8" id="chat-container">
             <div class="flex flex-col items-center justify-center py-6">
                 <div class="w-12 h-12 rounded-2xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center mb-4">
@@ -109,7 +129,7 @@
         </div>
     </main>
 
-    <div id="typing-indicator" class="hidden max-w-3xl mx-auto w-full px-4 mb-4">
+    <div id="typing-indicator" class="ui-layer hidden max-w-3xl mx-auto w-full px-4 mb-4">
         <div class="flex gap-4 items-center opacity-60">
             <img src="logo2.jpg" onerror="this.onerror=null;this.src='https://placehold.co/48x48/0038b8/FFFFFF?text=IL'" class="w-7 h-7 rounded-full object-cover grayscale">
             <div class="flex gap-1">
@@ -120,7 +140,7 @@
         </div>
     </div>
 
-    <footer class="shrink-0 p-4 md:pb-8 z-20 bg-gradient-to-t from-[#020617] via-[#020617] to-transparent pt-10">
+    <footer class="ui-layer shrink-0 p-4 md:pb-8 bg-gradient-to-t from-black via-black/80 to-transparent pt-10">
         <div class="max-w-3xl mx-auto relative">
             
             <div id="turnstile-container" class="flex flex-col items-center mb-6 overflow-visible">
@@ -131,7 +151,6 @@
                 <div class="cf-turnstile" data-sitekey="0x4AAAAAACoAQz2FBxxhVOSD" data-theme="dark" data-compact="true" data-callback="onTurnstileSuccess"></div>
             </div>
 
-            <!-- Character counter -->
             <div class="flex justify-end px-4 mb-1">
                 <span id="char-counter" class="text-[10px] font-medium text-slate-500 tracking-wider">0 / 2000</span>
             </div>
@@ -147,7 +166,6 @@
                     </select>
                 </div>
 
-                <!-- ADDED maxlength="2000" HERE -->
                 <textarea id="user-input" rows="1" maxlength="2000" class="flex-grow bg-transparent text-white text-[15px] px-3 py-3.5 resize-none focus:outline-none placeholder:text-slate-500 max-h-40" placeholder="Message IsraelGPT..."></textarea>
                 
                 <button id="send-btn" class="h-12 w-12 bg-blue-600 hover:bg-blue-500 text-white rounded-[18px] transition-all flex items-center justify-center shadow-lg shadow-blue-600/20 active:scale-90 disabled:opacity-40 shrink-0">
@@ -162,7 +180,142 @@
     </footer>
 
     <script>
+        // --- WAVE BACKGROUND ENGINE (Native Implementation) ---
+        class WaveBackground {
+            constructor() {
+                this.svg = document.getElementById('wave-svg');
+                this.container = document.getElementById('wave-container');
+                this.noise = new SimplexNoise();
+                this.lines = [];
+                this.paths = [];
+                this.mouse = { x: -100, y: -100, sx: -100, sy: -100, lx: -100, ly: -100, v: 0, vs: 0, a: 0, set: false };
+                this.strokeColor = "rgba(255, 255, 255, 0.15)"; // Soft white lines
+                this.init();
+            }
+
+            init() {
+                this.setSize();
+                this.setLines();
+                window.addEventListener('resize', () => { this.setSize(); this.setLines(); });
+                window.addEventListener('mousemove', (e) => this.updateMouse(e.pageX, e.pageY));
+                window.addEventListener('touchmove', (e) => {
+                    const touch = e.touches[0];
+                    this.updateMouse(touch.clientX, touch.clientY);
+                });
+                requestAnimationFrame((t) => this.tick(t));
+            }
+
+            setSize() {
+                this.width = window.innerWidth;
+                this.height = window.innerHeight;
+            }
+
+            setLines() {
+                this.lines = [];
+                this.svg.innerHTML = '';
+                this.paths = [];
+
+                const xGap = 12;
+                const yGap = 12;
+                const oWidth = this.width + 100;
+                const oHeight = this.height + 100;
+                const totalLines = Math.ceil(oWidth / xGap);
+                const totalPoints = Math.ceil(oHeight / yGap);
+                const xStart = (this.width - xGap * totalLines) / 2;
+                const yStart = (this.height - yGap * totalPoints) / 2;
+
+                for (let i = 0; i < totalLines; i++) {
+                    const points = [];
+                    for (let j = 0; j < totalPoints; j++) {
+                        points.push({
+                            x: xStart + xGap * i,
+                            y: yStart + yGap * j,
+                            wave: { x: 0, y: 0 },
+                            cursor: { x: 0, y: 0, vx: 0, vy: 0 }
+                        });
+                    }
+                    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    path.setAttribute('fill', 'none');
+                    path.setAttribute('stroke', this.strokeColor);
+                    path.setAttribute('stroke-width', '0.5');
+                    this.svg.appendChild(path);
+                    this.paths.push(path);
+                    this.lines.push(points);
+                }
+            }
+
+            updateMouse(x, y) {
+                this.mouse.x = x;
+                this.mouse.y = y;
+                if (!this.mouse.set) {
+                    this.mouse.sx = x; this.mouse.sy = y;
+                    this.mouse.lx = x; this.mouse.ly = y;
+                    this.mouse.set = true;
+                }
+            }
+
+            tick(time) {
+                // Smooth Mouse
+                this.mouse.sx += (this.mouse.x - this.mouse.sx) * 0.1;
+                this.mouse.sy += (this.mouse.y - this.mouse.sy) * 0.1;
+                const dx = this.mouse.x - this.mouse.lx;
+                const dy = this.mouse.y - this.mouse.ly;
+                const d = Math.hypot(dx, dy);
+                this.mouse.v = d;
+                this.mouse.vs += (d - this.mouse.vs) * 0.1;
+                this.mouse.vs = Math.min(100, this.mouse.vs);
+                this.mouse.lx = this.mouse.x;
+                this.mouse.ly = this.mouse.y;
+                this.mouse.a = Math.atan2(dy, dx);
+
+                // Update Points
+                this.lines.forEach(points => {
+                    points.forEach(p => {
+                        const move = this.noise.noise2D(
+                            (p.x + time * 0.008) * 0.003,
+                            (p.y + time * 0.003) * 0.002
+                        ) * 8;
+                        p.wave.x = Math.cos(move) * 10;
+                        p.wave.y = Math.sin(move) * 5;
+
+                        const mdx = p.x - this.mouse.sx;
+                        const mdy = p.y - this.mouse.sy;
+                        const md = Math.hypot(mdx, mdy);
+                        const limit = Math.max(150, this.mouse.vs * 2);
+
+                        if (md < limit) {
+                            const s = 1 - md / limit;
+                            const f = Math.cos(md * 0.001) * s;
+                            p.cursor.vx += Math.cos(this.mouse.a) * f * limit * this.mouse.vs * 0.0003;
+                            p.cursor.vy += Math.sin(this.mouse.a) * f * limit * this.mouse.vs * 0.0003;
+                        }
+
+                        p.cursor.vx += (0 - p.cursor.x) * 0.01;
+                        p.cursor.vy += (0 - p.cursor.y) * 0.01;
+                        p.cursor.vx *= 0.92;
+                        p.cursor.vy *= 0.92;
+                        p.cursor.x += p.cursor.vx;
+                        p.cursor.y += p.cursor.vy;
+                    });
+                });
+
+                // Draw Paths
+                this.lines.forEach((points, i) => {
+                    let dStr = `M ${points[0].x + points[0].wave.x} ${points[0].y + points[0].wave.y}`;
+                    for (let j = 1; j < points.length; j++) {
+                        const p = points[j];
+                        dStr += ` L ${p.x + p.wave.x + p.cursor.x} ${p.y + p.wave.y + p.cursor.y}`;
+                    }
+                    this.paths[i].setAttribute('d', dStr);
+                });
+
+                requestAnimationFrame((t) => this.tick(t));
+            }
+        }
+
+        // --- CHAT LOGIC ---
         lucide.createIcons();
+        new WaveBackground();
         
         const chatBox = document.getElementById('chat-container');
         const mainScrollBox = document.getElementById('chat-box');
@@ -190,34 +343,21 @@
 
         function parseMarkdown(text) {
             let parsed = escapeHTML(text);
-            parsed = parsed.replace(/```([\s\S]*?)```/g, '<pre class="bg-slate-950 p-3 rounded-xl my-2 overflow-x-auto text-[13px] font-mono border border-white/10 text-blue-300 shadow-inner max-w-full"><code>$1</code></pre>');
-            parsed = parsed.replace(/`([^`]+)`/g, '<code class="bg-slate-900 text-blue-300 px-1.5 py-0.5 rounded-md text-[13px] font-mono border border-white/10">$1</code>');
+            parsed = parsed.replace(/```([\s\S]*?)```/g, '<pre class="bg-slate-950/80 p-3 rounded-xl my-2 overflow-x-auto text-[13px] font-mono border border-white/10 text-blue-300 shadow-inner"><code>$1</code></pre>');
+            parsed = parsed.replace(/`([^`]+)`/g, '<code class="bg-slate-900/80 text-blue-300 px-1.5 py-0.5 rounded-md text-[13px] font-mono border border-white/10">$1</code>');
             parsed = parsed.replace(/\*\*\*([^*]+)\*\*\*/g, '<em><strong>$1</strong></em>');
             parsed = parsed.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-            parsed = parsed.replace(/__([^_]+)__/g, '<span class="underline">$1</span>');
             parsed = parsed.replace(/\*([^*]+)\*/g, '<em>$1</em>');
-            parsed = parsed.replace(/\b_([^_]+)_\b/g, '<em>$1</em>');
-            parsed = parsed.replace(/~~([^~]+)~~/g, '<del>$1</del>');
-            parsed = parsed.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">$1</a>');
+            parsed = parsed.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" class="text-blue-400 underline">$1</a>');
             return parsed;
         }
 
         inputField.addEventListener('input', function() {
             this.style.height = 'auto';
             this.style.height = (this.scrollHeight) + 'px';
-            
-            // Update the character counter
             const currentLength = this.value.length;
             charCounter.textContent = `${currentLength} / 2000`;
-            
-            // Change color if approaching the limit
-            if (currentLength >= 1950) {
-                charCounter.classList.add('text-red-400');
-                charCounter.classList.remove('text-slate-500');
-            } else {
-                charCounter.classList.remove('text-red-400');
-                charCounter.classList.add('text-slate-500');
-            }
+            charCounter.className = currentLength >= 1950 ? "text-[10px] font-medium text-red-400 tracking-wider" : "text-[10px] font-medium text-slate-500 tracking-wider";
         });
 
         function scrollToBottom() {
@@ -233,7 +373,6 @@
         function addUserMessage(text) {
             const div = document.createElement('div');
             div.className = 'flex w-full mb-4 px-2'; 
-            
             div.innerHTML = `
                 <div class="bg-blue-600 text-white px-4 py-3 rounded-2xl rounded-tr-none shadow-lg text-[14px] leading-relaxed whitespace-pre-wrap break-words w-fit max-w-[85%] ml-auto msg-animate">
                     ${escapeHTML(text)}
@@ -243,51 +382,44 @@
             scrollToBottom();
         }
 
-        // --- NEW STREAMING ENGINE ---
         async function streamText(element, fullText, messageId) {
             const contentDiv = element.querySelector('.content-area');
             const actionsDiv = element.querySelector('.actions-area');
             contentDiv.classList.add('streaming');
-            
             let currentText = "";
-            const charDelay = 15; // Speed of typing in ms
-            
+            const charDelay = 15;
             for (let i = 0; i < fullText.length; i++) {
                 currentText += fullText[i];
                 contentDiv.innerHTML = parseMarkdown(currentText);
                 scrollToBottom();
                 await new Promise(r => setTimeout(r, charDelay));
             }
-            
             contentDiv.classList.remove('streaming');
-            actionsDiv.style.opacity = "1";
             actionsDiv.classList.remove('hidden');
+            setTimeout(() => { actionsDiv.style.opacity = "1"; }, 10);
         }
 
         function addBotMessage(text, isError = false) {
             const div = document.createElement('div');
             div.className = 'flex gap-4 msg-animate w-full group relative mb-6';
             const statusColor = isError ? 'text-red-400' : 'text-blue-400';
-            const bgStyle = isError ? 'bg-red-950/20 border-red-900/50' : 'bg-slate-900 border-white/5';
-            
+            const bgStyle = isError ? 'bg-red-950/40 border-red-900/50' : 'bg-slate-900/80 border-white/5';
             const messageId = "msg_" + Math.random().toString(36).substr(2, 9);
             window.messageStore[messageId] = text;
 
             div.innerHTML = `
                 <img src="logo2.jpg" onerror="this.onerror=null;this.src='https://placehold.co/48x48/0038b8/FFFFFF?text=IL'" class="w-9 h-9 rounded-full object-cover shrink-0 border border-white/10 shadow-lg mt-1">
                 <div class="flex flex-col items-start min-w-0 max-w-[85%]">
-                    <div class="${bgStyle} border px-4 py-3.5 rounded-2xl rounded-tl-none shadow-xl text-slate-200 text-[14.5px] leading-relaxed markdown-body w-full">
+                    <div class="${bgStyle} border px-4 py-3.5 rounded-2xl rounded-tl-none shadow-xl text-slate-200 text-[14.5px] leading-relaxed markdown-body w-full backdrop-blur-sm">
                         <div class="${statusColor} font-bold text-[10px] uppercase tracking-wider mb-2">
                             ${isError ? 'System Error' : 'IsraelGPT'}
                         </div>
                         <div class="content-area whitespace-pre-wrap break-words"></div>
                     </div>
-                    
                     ${!isError ? `
                     <div class="actions-area flex items-center gap-3 py-2 px-2 opacity-0 transition-opacity duration-200 hidden">
                         <span class="text-[10px] text-slate-600 font-medium">Just now</span>
                         <div class="w-1 h-1 rounded-full bg-slate-800"></div>
-                        
                         <button onclick="copyMsg('${messageId}', this)" class="text-slate-500 hover:text-white transition-colors flex items-center gap-1 text-[11px] font-medium p-1">
                             <i data-lucide="copy" class="w-3.5 h-3.5"></i>
                             <span class="hidden sm:inline">Copy</span>
@@ -297,13 +429,8 @@
             `;
             chatBox.appendChild(div);
             lucide.createIcons();
-            
-            if (isError) {
-                div.querySelector('.content-area').innerHTML = parseMarkdown(text);
-            } else {
-                streamText(div, text, messageId);
-            }
-            
+            if (isError) div.querySelector('.content-area').innerHTML = parseMarkdown(text);
+            else streamText(div, text, messageId);
             scrollToBottom();
         }
 
@@ -311,49 +438,43 @@
             const text = window.messageStore[id];
             if (!text) return;
             try {
-                await navigator.clipboard.writeText(text);
+                const el = document.createElement('textarea');
+                el.value = text;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
                 const originalHTML = btnElement.innerHTML;
                 btnElement.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400"></i><span class="text-emerald-400 hidden sm:inline">Done</span>`;
                 lucide.createIcons();
                 setTimeout(() => { btnElement.innerHTML = originalHTML; lucide.createIcons(); }, 2000);
-            } catch (err) {
-                console.error("Copy failed");
-            }
+            } catch (err) { console.error("Copy failed"); }
         }
 
         async function sendMessage() {
             const text = inputField.value.trim();
             const tokenInput = document.querySelector('[name="cf-turnstile-response"]');
             const token = tokenInput ? tokenInput.value : '';
-            const mode = modeSelect.value;
-
             if (!text) return;
             if (!token) {
                 addBotMessage("Please complete the security check first.", true);
                 return;
             }
-
             addUserMessage(text);
             inputField.value = '';
             inputField.style.height = 'auto';
-            charCounter.textContent = '0 / 2000'; // Reset counter
-            charCounter.classList.remove('text-red-400');
-            charCounter.classList.add('text-slate-500');
-            
+            charCounter.textContent = '0 / 2000';
             sendBtn.disabled = true;
             typingIndicator.classList.remove('hidden');
             scrollToBottom();
-
             try {
                 const response = await fetch(WORKER_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ question: text, mode: mode, turnstileToken: token })
+                    body: JSON.stringify({ question: text, mode: modeSelect.value, turnstileToken: token })
                 });
-
                 const data = await response.json();
                 typingIndicator.classList.add('hidden');
-                
                 if (data.error) addBotMessage(data.error, true);
                 else addBotMessage(data.reply);
             } catch (err) {
@@ -367,18 +488,12 @@
 
         sendBtn.addEventListener('click', sendMessage);
         inputField.addEventListener('keydown', (e) => { 
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage(); 
-            }
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
         });
 
-        document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-                addBotMessage("I'm here. What do you need, bradar?");
-            }, 300);
-        });
-
+        window.onload = () => {
+            setTimeout(() => addBotMessage("I'm here. What do you need, bradar?"), 300);
+        };
     </script>
 </body>
 </html>

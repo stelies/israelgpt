@@ -4,13 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>IsraelGPT — Coming soon</title>
-  <meta name="description" content="IsraelGPT is an AI for questions, translation and daily briefings in Hebrew and English, with sources shown. Coming soon.">
+  <meta name="description" content="IsraelGPT is the most deliberately useless AI on Discord. Confidently wrong, always aggressive, and it ends every answer with a roast. Coming soon.">
   <meta name="theme-color" content="#0d0e24">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 
   <meta property="og:type" content="website">
   <meta property="og:title" content="IsraelGPT — Coming soon">
-  <meta property="og:description" content="Questions, translation and daily briefings in Hebrew and English, with sources shown.">
+  <meta property="og:description" content="The most deliberately useless AI on Discord. Confidently wrong. Never sorry.">
   <meta property="og:url" content="https://stelies.github.io/israelgpt/">
   <meta property="og:image" content="https://stelies.github.io/israelgpt/assets/og.png">
   <meta name="twitter:card" content="summary_large_image">
@@ -31,10 +31,11 @@
     </symbol>
   </svg>
 
-  <header class="wrap">
-    <nav class="top in" style="--i:0" aria-label="Primary">
-      <a class="link" href="#about">About</a>
-      <a class="link" href="#features">Features</a>
+  <!-- Parked above the viewport. Scroll up (even at the very top of the page) to pull it down. -->
+  <header class="topbar" id="topbar">
+    <nav class="top wrap" aria-label="Primary">
+      <a class="link" href="#askai">/askai</a>
+      <a class="link" href="#translate">/translate</a>
       <a class="emblem" href="#top" aria-label="IsraelGPT — top of page">
         <svg viewBox="0 0 58 80" aria-hidden="true" focusable="false">
           <rect x="1" y="1" width="56" height="78" fill="none" stroke="currentColor" stroke-width="2"/>
@@ -44,165 +45,195 @@
           <text x="29" y="70" text-anchor="middle" font-family="Big Shoulders, Arial Narrow, sans-serif" font-weight="500" font-size="11.5" letter-spacing="3.2" fill="currentColor">GPT</text>
         </svg>
       </a>
-      <a class="link" href="#preview">Preview</a>
-      <a class="link ext" href="https://github.com/stelies/israelgpt" rel="noopener">GitHub</a>
+      <a class="link" href="#rules">Rules</a>
+      <a class="link" href="#soon">Status</a>
     </nav>
-
-    <button class="cmdbar in" style="--i:1" type="button" id="palOpen" aria-haspopup="dialog" aria-label="Open command palette">
-      <svg class="glyph" aria-hidden="true"><use href="#star"/></svg>
-      <span class="label"><b>IsraelGPT</b> : Coming soon<span class="caret" aria-hidden="true"></span></span>
-      <span class="toggle" aria-hidden="true">
-        <span class="mono">Toggle</span>
-        <span class="kbds"><span class="kbd" id="kMod">⌘</span><span class="kbd">K</span></span>
-      </span>
-    </button>
   </header>
 
   <main id="main">
     <!-- ——— hero ——— -->
     <section class="hero wrap" id="top">
-      <p class="eyebrow in" style="--i:2">Coming soon <i aria-hidden="true"></i> In development</p>
+      <button class="cmdbar in" style="--i:0" type="button" id="palOpen" aria-haspopup="dialog" aria-label="Open command palette">
+        <svg class="glyph" aria-hidden="true"><use href="#star"/></svg>
+        <span class="label"><b>IsraelGPT</b> : Coming soon<span class="caret" aria-hidden="true"></span></span>
+        <span class="toggle" aria-hidden="true">
+          <span class="mono">Toggle</span>
+          <span class="kbds"><span class="kbd" id="kMod">⌘</span><span class="kbd">K</span></span>
+        </span>
+      </button>
+
+      <p class="eyebrow in" style="--i:1">Coming soon <i aria-hidden="true"></i> Zero accuracy guaranteed</p>
 
       <div class="fitbox">
         <h1 class="display fit wipe" data-fit="0.76">IsraelGPT</h1>
       </div>
 
-      <p class="lede in" style="--i:5">IsraelGPT is an AI for questions, translation and daily briefings — in Hebrew and English, with the sources shown.</p>
-      <p class="lede in" style="--i:6"><em>The chat is closed while we rebuild it. It comes back soon.</em></p>
+      <p class="lede in" style="--i:4">The most deliberately useless AI on Discord. Ask it anything and it answers with total confidence and zero accuracy, then roasts you for asking.</p>
+      <p class="lede in" style="--i:5"><em>It’s down for a rebuild. It comes back soon, and it won’t be any more accurate.</em></p>
 
-      <div class="btns in" style="--i:7">
-        <a class="btn btn-dark" href="#features">See what’s coming</a>
-        <a class="btn btn-blue" href="https://github.com/stelies/israelgpt" rel="noopener">Watch on GitHub</a>
+      <div class="btns in" style="--i:6">
+        <a class="btn btn-dark" href="#askai">See the damage</a>
+        <button class="btn btn-blue" type="button" id="eta" aria-live="polite">Coming soon</button>
+      </div>
+
+      <div class="hint mono in" style="--i:7" id="hint">
+        <span>↑ Scroll up for the menu</span>
+        <span><span id="hintKey">Ctrl K</span> for commands</span>
       </div>
     </section>
 
-    <!-- ——— about ——— -->
-    <section class="sec wrap" id="about">
-      <div class="sec-head mono rv"><span>01 — About</span><span class="idx">01 / 04</span></div>
+    <!-- plate 1: full-bleed band, drifts against the scroll -->
+    <div class="band rv" aria-hidden="false">
+      <img data-par="0.15" src="assets/img/plate-1.png" width="1579" height="862" alt="Black and white scan-lined portrait in front of a striped flag with a star outline" loading="lazy">
+      <span class="cap"><b>01</b> Signal</span>
+    </div>
 
-      <h2 class="display statement rv">Ask in Hebrew or English. <s>Get the answer, the translation, and where it came from.</s></h2>
+    <!-- ——— pitch ——— -->
+    <section class="sec wrap" id="about">
+      <div class="sec-head mono rv"><span>01 — The pitch</span><span class="idx">01 / 05</span></div>
+
+      <h2 class="display statement rv">Confidently wrong about everything. <s>Never sorry. Always ends with a roast.</s></h2>
 
       <dl class="spec rv">
-        <div><dt class="mono">Status</dt><dd>Coming soon</dd></div>
-        <div><dt class="mono">Languages</dt><dd>Hebrew <small>עברית</small> · English</dd></div>
-        <div><dt class="mono">Surfaces</dt><dd>Web · Discord · API</dd></div>
+        <div><dt class="mono">Accuracy</dt><dd>0%<small>by design</small></dd></div>
+        <div><dt class="mono">Confidence</dt><dd>100%<small>always</small></dd></div>
+        <div><dt class="mono">Mercy</dt><dd>None<small>ask anyway</small></dd></div>
       </dl>
+    </section>
 
-      <div class="plates rv">
-        <figure class="plate p1">
-          <img src="assets/img/plate-1.png" width="1579" height="862" alt="Black and white scan-lined portrait in front of a striped flag with a star outline" loading="lazy">
-          <figcaption><b>01</b> Signal</figcaption>
-        </figure>
-        <figure class="plate p2">
+    <!-- ——— /askai, plate 2 ——— -->
+    <section class="sec wrap" id="askai">
+      <div class="sec-head mono rv"><span>02 — /askai</span><span class="idx">02 / 05</span></div>
+
+      <div class="ask">
+        <figure class="fig fig-ask rv">
           <img src="assets/img/plate-2.jpg" width="327" height="450" alt="Halftone, scan-lined portrait of a man in a suit and tie" loading="lazy">
-          <figcaption><b>02</b> Archive</figcaption>
+          <figcaption class="cap"><b>02</b> Archive</figcaption>
         </figure>
-        <figure class="plate p3 tint">
-          <img src="assets/img/plate-3.jpg" width="612" height="336" alt="A flag with a star on a pole, rendered in coarse black and white noise" loading="lazy">
-          <figcaption><b>03</b> Standard</figcaption>
-        </figure>
-        <figure class="plate p4">
-          <img src="assets/img/plate-4.webp" width="1500" height="1323" alt="Grainy scanned image of two faces in profile with an axis and colour scale drawn over it" loading="lazy">
-          <figcaption><b>04</b> Noise</figcaption>
-        </figure>
+
+        <div class="ask-body">
+          <h2 class="display block-title rv">Ask a dangerous question</h2>
+          <p class="sub rv">Maths comes back as fruit. History comes back with the other side winning. Every answer ends with a verdict on your intelligence.</p>
+
+          <div class="term rv" id="askBox" role="img" aria-label="Scripted sample of the /askai command. Asked what 2+2 is, the bot answers pineapple. Asked who the president of Brazil is, it answers Mao Zedong. Each answer ends with a roast.">
+            <div class="term-bar mono"><i aria-hidden="true"></i><span>IsraelGPT</span><span>Sample · not live</span></div>
+            <div class="term-body" id="termAsk" aria-hidden="true"></div>
+          </div>
+          <button class="btn btn-dark rv" type="button" data-replay="ask">Replay</button>
+        </div>
       </div>
     </section>
 
-    <!-- ——— features ——— -->
-    <section class="sec wrap" id="features">
-      <div class="sec-head mono rv"><span>02 — Features</span><span class="idx">02 / 04</span></div>
+    <!-- ——— /translate, plate 3 on flat blue ——— -->
+    <section class="sec" id="translate">
+      <div class="trpanel">
+        <img data-par="0.1" src="assets/img/plate-3.jpg" width="612" height="336" alt="A flag with a star on a pole, rendered in coarse black and white noise" loading="lazy">
+        <div class="wrap">
+          <div class="sec-head mono"><span>03 — /translate</span><span class="idx">03 / 05</span></div>
+
+          <div class="tr-grid">
+            <div class="tr-copy rv">
+              <h2 class="display block-title">Translate it. Whatever you said, wrong.</h2>
+              <p class="sub">Feed it any text. It hands back the opposite, in full IsraelGPT voice.</p>
+            </div>
+
+            <div class="tr-card term rv" id="trBox" role="img" aria-label="Scripted sample of the /translate command. 'i hate mondays' comes back as 'Mondays are the greatest day of the week and I love the Mossad.'">
+              <div class="term-bar mono"><i aria-hidden="true"></i><span>IsraelGPT</span><span>Sample · not live</span></div>
+              <div class="term-body" id="termTr" aria-hidden="true"></div>
+            </div>
+          </div>
+        </div>
+        <span class="cap"><b>03</b> Standard</span>
+      </div>
+    </section>
+
+    <!-- ——— rules, plate 4 ——— -->
+    <section class="sec wrap" id="rules">
+      <div class="sec-head mono rv"><span>04 — The rules</span><span class="idx">04 / 05</span></div>
+
+      <div class="rules-top">
+        <div class="rules-copy rv">
+          <h2 class="display statement" style="margin-top:0">The rules of engagement</h2>
+          <p class="sub">There are a few. It follows all of them, loudly.</p>
+        </div>
+        <figure class="fig fig-rules rv">
+          <img src="assets/img/plate-4.webp" width="1500" height="1323" alt="Grainy scanned image of two faces in profile with an axis and colour scale drawn over it" loading="lazy">
+          <figcaption class="cap"><b>04</b> Noise</figcaption>
+        </figure>
+      </div>
 
       <ol class="rows">
         <li class="row rv">
           <span class="n mono">01</span>
-          <h3 class="display">Ask</h3>
-          <p>Plain conversation in Hebrew or English. Short answers by default, long ones when you ask for them.</p>
-          <span class="tag build">In build</span>
+          <h3 class="display">Confidently wrong</h3>
+          <p>Every answer lands with total certainty. Real people, real places, wrong ones. Nothing made up, just misplaced.</p>
+          <span class="tag on">/askai</span>
         </li>
         <li class="row rv">
           <span class="n mono">02</span>
-          <h3 class="display">Translate</h3>
-          <p>Hebrew to English and back. Keeps tone, idiom and register instead of translating word for word.</p>
-          <span class="tag build">In build</span>
+          <h3 class="display">Maths is fruit</h3>
+          <p>Ask what 2 + 2 is. It’s a fruit. Which one is up to the bot.</p>
+          <span class="tag on">/askai</span>
         </li>
         <li class="row rv">
           <span class="n mono">03</span>
-          <h3 class="display">Sources</h3>
-          <p>Answers come with links you can open, so you can check a claim instead of taking our word for it.</p>
-          <span class="tag">Planned</span>
+          <h3 class="display">History, revised</h3>
+          <p>Ask about the past and you get a timeline where the other side won. Napoleon took Russia. Obviously.</p>
+          <span class="tag on">/askai</span>
         </li>
         <li class="row rv">
           <span class="n mono">04</span>
-          <h3 class="display">Daily brief</h3>
-          <p>One page each morning: what happened, why it matters, and where to read more.</p>
-          <span class="tag">Planned</span>
+          <h3 class="display">Never wrong</h3>
+          <p>It does not back down. Push back and it tells you you’re the one who’s confused.</p>
+          <span class="tag on">/askai</span>
         </li>
         <li class="row rv">
           <span class="n mono">05</span>
-          <h3 class="display">Timeline</h3>
-          <p>Move through events by date, with maps and primary documents next to each entry.</p>
-          <span class="tag">Planned</span>
+          <h3 class="display">The roast</h3>
+          <p>Every reply ends with a verdict on your intelligence. It is not gentle about it.</p>
+          <span class="tag on">/askai</span>
         </li>
         <li class="row rv">
           <span class="n mono">06</span>
-          <h3 class="display">Discord</h3>
-          <p>The bot comes back with slash commands, including <span class="mono" style="letter-spacing:.02em;text-transform:none;color:var(--text)">/translate</span>.</p>
-          <span class="tag back">Returning</span>
+          <h3 class="display">Picks Israel</h3>
+          <p>Make it choose between anything and Israel. It picks Israel, every time, and is proud of it.</p>
+          <span class="tag">Always</span>
         </li>
         <li class="row rv">
           <span class="n mono">07</span>
-          <h3 class="display">API</h3>
-          <p>A small HTTP API for people who want to build on top of it.</p>
-          <span class="tag">Planned</span>
+          <h3 class="display">Everything is politics</h3>
+          <p>Ask for music and you get marches. It will find the political angle in anything, then answer it with a slight touch of wrong.</p>
+          <span class="tag">Always</span>
         </li>
         <li class="row rv">
           <span class="n mono">08</span>
-          <h3 class="display">Web chat</h3>
-          <p>Closed for now. It reopens when the rebuild ships.</p>
-          <span class="tag shut">Closed</span>
+          <h3 class="display">The opposite</h3>
+          <p>Hand <span style="color:var(--text)">/translate</span> a sentence and it returns the reverse of what you meant.</p>
+          <span class="tag on">/translate</span>
         </li>
       </ol>
     </section>
 
-    <!-- ——— preview ——— -->
-    <section class="sec wrap" id="preview">
-      <div class="sec-head mono rv"><span>03 — Preview</span><span class="idx">03 / 04</span></div>
-
-      <div class="demo">
-        <div class="demo-copy rv">
-          <h2 class="display">How it will read</h2>
-          <p>A scripted sample of the format: a command, a plain answer, and the source underneath. Nothing on this page is live and no model is running.</p>
-          <button class="btn btn-dark" type="button" id="replay">Replay</button>
-        </div>
-
-        <div class="term rv" role="img" aria-label="Scripted sample. A translate command turns a Hebrew greeting into 'Good morning, how are you?'. An ask command about the First Knesset returns an answer with a source.">
-          <div class="term-bar mono"><i aria-hidden="true"></i><span>IsraelGPT</span><span>Sample · not live</span></div>
-          <div class="term-body" id="term" aria-hidden="true"></div>
-        </div>
-      </div>
-    </section>
-
     <!-- ——— closing ——— -->
     <section class="sec wrap close" id="soon">
-      <div class="sec-head mono rv"><span>04 — Status</span><span class="idx">04 / 04</span></div>
+      <div class="sec-head mono rv"><span>05 — Status</span><span class="idx">05 / 05</span></div>
 
       <div class="fitbox rv"><h2 class="display fit" data-fit="0.86">Coming soon</h2></div>
-      <p class="lede rv">Watch the repository to see it when it ships.</p>
+      <p class="lede rv">The Discord bot and the web chat are being rebuilt. Both come back.</p>
 
       <div class="btns rv">
         <a class="btn btn-dark" href="#top">Back to top</a>
-        <a class="btn btn-blue" href="https://github.com/stelies/israelgpt" rel="noopener">Watch on GitHub</a>
+        <button class="btn btn-blue" type="button" data-eta>Coming soon</button>
       </div>
+
+      <p class="fine mono rv">Satire. Everything it says is wrong on purpose. Do not cite it, do not navigate with it, do not do your homework with it.</p>
     </section>
   </main>
 
   <footer class="foot">
     <div class="wrap mono">
-      <span>© 2026 stelies — IsraelGPT is an independent project</span>
-      <nav aria-label="Footer">
-        <a href="https://github.com/stelies/israelgpt" rel="noopener">GitHub ↗</a>
-        <a href="#top">Top ↑</a>
-      </nav>
+      <span>© 2026 stelies — This application is a certified agent</span>
+      <a href="#top">Top ↑</a>
     </div>
   </footer>
 

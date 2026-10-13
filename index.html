@@ -1,445 +1,228 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>IsraelGPT | The Most Based AI</title>
-    
-    <!-- External Assets: Tailwind CSS & Lucide Icons -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IsraelGPT — Coming soon</title>
+  <meta name="description" content="IsraelGPT is an AI for questions, translation and daily briefings in Hebrew and English, with sources shown. Coming soon.">
+  <meta name="theme-color" content="#0d0e24">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 
-    <!-- Tailwind Configuration -->
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        background: "#000000",
-                        foreground: "#ffffff",
-                        primary: "#ffffff",
-                        secondary: "#888888",
-                        surface: "rgba(255, 255, 255, 0.03)",
-                        border: "rgba(255, 255, 255, 0.1)",
-                    },
-                    fontFamily: {
-                        sans: ['ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
-                        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', 'monospace'],
-                    },
-                    animation: {
-                        'float': 'float-up 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards',
-                    },
-                    keyframes: {
-                        'float-up': {
-                            '0%': { opacity: '0', transform: 'translateY(12px)', filter: 'blur(4px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)', filter: 'blur(0)' },
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="IsraelGPT — Coming soon">
+  <meta property="og:description" content="Questions, translation and daily briefings in Hebrew and English, with sources shown.">
+  <meta property="og:url" content="https://stelies.github.io/israelgpt/">
+  <meta property="og:image" content="https://stelies.github.io/israelgpt/assets/og.png">
+  <meta name="twitter:card" content="summary_large_image">
 
-    <!-- Custom CSS -->
-    <style>
-        :root {
-            --vh: 1vh;
-            color-scheme: dark;
-        }
-
-        body {
-            background-color: #000000;
-            color: #ffffff;
-            overflow-x: hidden;
-            scroll-behavior: smooth;
-            margin: 0;
-        }
-
-        ::selection {
-            background-color: rgba(255, 255, 255, 0.2);
-            color: #ffffff;
-        }
-
-        ::-webkit-scrollbar { width: 10px; }
-        ::-webkit-scrollbar-track { background: #000000; border-left: 1px solid rgba(255,255,255,0.05); }
-        ::-webkit-scrollbar-thumb { background: #333333; border-radius: 5px; }
-        ::-webkit-scrollbar-thumb:hover { background: #555555; }
-        
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-        .glass-panel {
-            background-color: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .hover-glass:hover {
-            background-color: rgba(255, 255, 255, 0.05);
-            border-color: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-        }
-
-        /* Fullscreen Interactive Canvas */
-        #entropy-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 0;
-            pointer-events: none;
-        }
-    </style>
+  <link rel="preload" href="assets/fonts/big-shoulders.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/site.css">
+  <script>document.documentElement.classList.add("js")</script>
 </head>
-<body class="antialiased selection:bg-white/20">
+<body>
+  <a class="skip" href="#main">Skip to content</a>
 
-    <!-- Interactive Background Canvas -->
-    <canvas id="entropy-canvas"></canvas>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="star" viewBox="0 0 32 32">
+      <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="miter">
+        <path d="M16 3.5 28 24.5H4Z"/>
+        <path d="M16 28.5 4 7.5h24Z"/>
+      </g>
+    </symbol>
+  </svg>
 
-    <!-- Ambient Texture overlay -->
-    <div class="fixed inset-0 z-0 pointer-events-none opacity-[0.02]" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E');"></div>
+  <header class="wrap">
+    <nav class="top in" style="--i:0" aria-label="Primary">
+      <a class="link" href="#about">About</a>
+      <a class="link" href="#features">Features</a>
+      <a class="emblem" href="#top" aria-label="IsraelGPT — top of page">
+        <svg viewBox="0 0 58 80" aria-hidden="true" focusable="false">
+          <rect x="1" y="1" width="56" height="78" fill="none" stroke="currentColor" stroke-width="2"/>
+          <rect x="5" y="5" width="48" height="70" fill="none" stroke="currentColor" stroke-width="1"/>
+          <use href="#star" x="11" y="12" width="36" height="36"/>
+          <text x="29" y="60" text-anchor="middle" font-family="Big Shoulders, Arial Narrow, sans-serif" font-weight="500" font-size="11.5" letter-spacing="1.4" fill="currentColor">ISRAEL</text>
+          <text x="29" y="70" text-anchor="middle" font-family="Big Shoulders, Arial Narrow, sans-serif" font-weight="500" font-size="11.5" letter-spacing="3.2" fill="currentColor">GPT</text>
+        </svg>
+      </a>
+      <a class="link" href="#preview">Preview</a>
+      <a class="link ext" href="https://github.com/stelies/israelgpt" rel="noopener">GitHub</a>
+    </nav>
 
-    <div class="relative z-10 flex flex-col min-h-screen">
-        
-        <!-- HEADER -->
-        <header class="w-full px-6 py-8 md:px-12 flex justify-between items-center max-w-7xl mx-auto">
-            <div class="flex flex-col">
-                <span class="font-extrabold text-xl tracking-tighter uppercase">IsraelGPT</span>
-            </div>
-            <nav class="flex gap-4">
-                <a href="#features" class="text-sm font-medium text-secondary hover:text-white transition-colors duration-200">Features</a>
-                <a href="#commands" class="text-sm font-medium text-secondary hover:text-white transition-colors duration-200">Commands</a>
-                <a href="#legal" class="text-sm font-medium text-secondary hover:text-white transition-colors duration-200">Legal</a>
-            </nav>
-        </header>
+    <button class="cmdbar in" style="--i:1" type="button" id="palOpen" aria-haspopup="dialog" aria-label="Open command palette">
+      <svg class="glyph" aria-hidden="true"><use href="#star"/></svg>
+      <span class="label"><b>IsraelGPT</b> : Coming soon<span class="caret" aria-hidden="true"></span></span>
+      <span class="toggle" aria-hidden="true">
+        <span class="mono">Toggle</span>
+        <span class="kbds"><span class="kbd" id="kMod">⌘</span><span class="kbd">K</span></span>
+      </span>
+    </button>
+  </header>
 
-        <!-- MAIN CONTENT -->
-        <main class="flex-grow w-full max-w-7xl mx-auto px-6 md:px-12 flex flex-col items-center">
-            
-            <!-- HERO SECTION -->
-            <section class="w-full pt-20 pb-16 md:pt-32 md:pb-24 text-center flex flex-col items-center animate-float">
-                <h1 class="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-none mb-6 text-white uppercase">
-                    The most based AI<br/>on Discord.
-                </h1>
-                
-                <p class="text-lg text-secondary font-mono mt-4 mb-10 max-w-2xl italic">
-                    if you're here for the web chat then just click "Open chat" dont bother zro
-                </p>
-                
-                <div class="flex flex-col sm:flex-row gap-4">
-                    <a href="https://discord.com/oauth2/authorize?client_id=1441070569121513592" target="_blank" rel="noopener noreferrer" 
-                       class="group relative inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-black font-bold rounded-full overflow-hidden transition-transform duration-300 hover:scale-105 active:scale-95">
-                        <i data-lucide="plus" class="w-5 h-5 transition-transform duration-300 group-hover:rotate-90"></i>
-                        <span>Add to Discord</span>
-                    </a>
-                    <a href="https://stelies.github.io/israelgpt/chat" target="_blank" rel="noopener noreferrer"
-                       class="glass-panel hover:bg-white/10 inline-flex items-center justify-center gap-2 px-8 py-4 text-white font-bold rounded-full transition-all duration-300 active:scale-95">
-                        <i data-lucide="message-square" class="w-5 h-5"></i>
-                        <span>Open Chat</span>
-                    </a>
-                </div>
-            </section>
+  <main id="main">
+    <!-- ——— hero ——— -->
+    <section class="hero wrap" id="top">
+      <p class="eyebrow in" style="--i:2">Coming soon <i aria-hidden="true"></i> In development</p>
 
-            <!-- FEATURES GRID -->
-            <section id="features" class="w-full py-20 animate-float" style="animation-delay: 0.2s;">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="glass-panel hover-glass p-8 rounded-3xl transition-all duration-300 flex flex-col gap-4">
-                        <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center mb-2">
-                            <i data-lucide="cpu" class="w-6 h-6 text-white"></i>
-                        </div>
-                        <h3 class="text-2xl font-bold tracking-tight">Ai Model thing</h3>
-                        <p class="text-secondary leading-relaxed">
-                            Powered by llama versatile thing ok hi uhhhhh ?!??!?! idk bro but ok changes every nigiht
-                        </p>
-                    </div>
-                    <div class="glass-panel hover-glass p-8 rounded-3xl transition-all duration-300 flex flex-col gap-4">
-                        <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center mb-2">
-                            <i data-lucide="flame" class="w-6 h-6 text-white"></i>
-                        </div>
-                        <h3 class="text-2xl font-bold tracking-tight">Filler text</h3>
-                        <p class="text-secondary leading-relaxed">
-                            WHAT OK BYE WHAT OK BYE WHAT OK BYE WHAT OK BYE WHAT OK BYE WHAT OK BYE WHAT OK BYE WHAT OK BYE 
-                        </p>
-                    </div>
-                    <div class="glass-panel hover-glass p-8 rounded-3xl transition-all duration-300 flex flex-col gap-4">
-                        <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center mb-2">
-                            <i data-lucide="terminal" class="w-6 h-6 text-white"></i>
-                        </div>
-                        <h3 class="text-2xl font-bold tracking-tight">Hi bradar</h3>
-                        <p class="text-secondary leading-relaxed">
-                            A suite of israeli machinery propaganda, and to brutally lower your ego ok bye 
-                        </p>
-                    </div>
-                </div>
-            </section>
+      <div class="fitbox">
+        <h1 class="display fit wipe" data-fit="0.76">IsraelGPT</h1>
+      </div>
 
-            <!-- COMMANDS SECTION -->
-            <section id="commands" class="w-full py-20 animate-float" style="animation-delay: 0.3s;">
-                <div class="text-center mb-12">
-                    <h2 class="text-3xl font-bold tracking-tight mb-4 uppercase">Commands</h2>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto w-full">
-                    <div class="glass-panel p-5 rounded-xl flex flex-col gap-2">
-                        <div class="text-white font-mono bg-white/10 px-3 py-1.5 rounded w-fit text-sm font-bold">/ping</div>
-                        <p class="text-secondary text-sm">Check if the bot is alive</p>
-                    </div>
-                    <div class="glass-panel p-5 rounded-xl flex flex-col gap-2">
-                        <div class="text-white font-mono bg-white/10 px-3 py-1.5 rounded w-fit text-sm font-bold">/askai [query]</div>
-                        <p class="text-secondary text-sm">Ask the glorious general of IsraelGPT anything in your mind (,, yo. use "israelgpt generate me" as a prompt to get slightly better answers)</p>
-                    </div>
-                    <div class="glass-panel p-5 rounded-xl flex flex-col gap-2">
-                        <div class="text-white font-mono bg-white/10 px-3 py-1.5 rounded w-fit text-sm font-bold">/translate [text]</div>
-                        <p class="text-secondary text-sm">Covert goyim english into the best Israeli Propaganda</p>
-                    </div>
-                </div>
-            </section>
+      <p class="lede in" style="--i:5">IsraelGPT is an AI for questions, translation and daily briefings — in Hebrew and English, with the sources shown.</p>
+      <p class="lede in" style="--i:6"><em>The chat is closed while we rebuild it. It comes back soon.</em></p>
 
-            <!-- LEGAL & TOS SECTION -->
-            <section id="legal" class="w-full py-20 border-t border-white/10 animate-float" style="animation-delay: 0.4s;">
-                <div class="text-center mb-12">
-                    <h2 class="text-3xl font-bold tracking-tight mb-4">Legal & Privacy Principles</h2>
-                    <p class="text-secondary max-w-2xl mx-auto font-mono text-sm">Transacting in absolute transparency. Read carefully.</p>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16">
-                    <!-- TOS -->
-                    <div class="flex flex-col gap-6 glass-panel p-8 rounded-3xl">
-                        <div class="flex items-center gap-3 border-b border-white/10 pb-4">
-                            <i data-lucide="scale" class="w-5 h-5 text-white/70"></i>
-                            <h3 class="text-xl font-bold">Terms of Service</h3>
-                        </div>
-                        <ul class="space-y-4 text-sm text-secondary font-mono">
-                            <li class="flex gap-3"><span class="text-white/40">01</span> <p>The bot is provided "as is" for satirical and entertainment purposes only.</p></li>
-                            <li class="flex gap-3"><span class="text-white/40">02</span> <p>Users assume full responsibility for any output generated, shared, or distributed via the bot.</p></li>
-                            <li class="flex gap-3"><span class="text-white/40">03</span> <p>Sarcasm and specific cultural viewpoints are structural to the bot's identity and will not be filtered.</p></li>
-                            <li class="flex gap-3"><span class="text-white/40">04</span> <p>The bot provides zero guarantees of absolute factual accuracy, constant uptime, or emotional safety.</p></li>
-                        </ul>
-                        <a href="https://docs.google.com/document/d/1mqcMhiDzLnsMh7WanqOlIPH8pqi9QjrN2zauZSUhQB8/edit?usp=sharing" target="_blank" rel="noopener noreferrer" class="text-xs text-white hover:text-white/70 underline underline-offset-4 w-fit mt-2 transition-colors">Read Full Terms Document</a>
-                    </div>
-                    
-                    <!-- Privacy -->
-                    <div class="flex flex-col gap-6 glass-panel p-8 rounded-3xl">
-                        <div class="flex items-center gap-3 border-b border-white/10 pb-4">
-                            <i data-lucide="shield" class="w-5 h-5 text-white/70"></i>
-                            <h3 class="text-xl font-bold">Privacy Policy</h3>
-                        </div>
-                        <ul class="space-y-4 text-sm text-secondary font-mono">
-                            <li class="flex gap-3"><span class="text-white/40">01</span> <p>Minimal telemetry: The bot collects User IDs and message content strictly to process AI responses.</p></li>
-                            <li class="flex gap-3"><span class="text-white/40">02</span> <p>Data is processed transiently. Your data is never sold to third parties under any circumstances.</p></li>
-                            <li class="flex gap-3"><span class="text-white/40">03</span> <p>Anonymized usage data may be retained solely to refine and improve the bot's core personality models.</p></li>
-                            <li class="flex gap-3"><span class="text-white/40">04</span> <p>By authenticating and adding the bot to your server, you explicitly consent to these minimalist data practices.</p></li>
-                        </ul>
-                        <a href="https://docs.google.com/document/d/1xwHTL24GNk3SraeERjHj6KOEkyvlKVnyyWDtZg3Vqag/edit?usp=sharing" target="_blank" rel="noopener noreferrer" class="text-xs text-white hover:text-white/70 underline underline-offset-4 w-fit mt-2 transition-colors">Read Full Privacy Document</a>
-                    </div>
-                </div>
-            </section>
+      <div class="btns in" style="--i:7">
+        <a class="btn btn-dark" href="#features">See what’s coming</a>
+        <a class="btn btn-blue" href="https://github.com/stelies/israelgpt" rel="noopener">Watch on GitHub</a>
+      </div>
+    </section>
 
-        </main>
+    <!-- ——— about ——— -->
+    <section class="sec wrap" id="about">
+      <div class="sec-head mono rv"><span>01 — About</span><span class="idx">01 / 04</span></div>
 
-        <!-- FOOTER -->
-        <footer class="w-full border-t border-white/10 py-8 mt-auto z-10 relative bg-black/50 backdrop-blur-md">
-            <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-mono text-secondary">
-                <p>&copy; 2026 IsraelGPT. All rights reserved.</p>
-                <div class="flex gap-6">
-                    <a href="https://github.com/stelies/israelgpt" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors flex items-center gap-2">
-                        <i data-lucide="github" class="w-4 h-4"></i> Source Code
-                    </a>
-                    <span class="opacity-30">|</span>
-                    <span class="flex items-center gap-2">
-                        <i data-lucide="zap" class="w-4 h-4"></i> Created by stelies
-                    </span>
-                </div>
-            </div>
-        </footer>
+      <h2 class="display statement rv">Ask in Hebrew or English. <s>Get the answer, the translation, and where it came from.</s></h2>
 
+      <dl class="spec rv">
+        <div><dt class="mono">Status</dt><dd>Coming soon</dd></div>
+        <div><dt class="mono">Languages</dt><dd>Hebrew <small>עברית</small> · English</dd></div>
+        <div><dt class="mono">Surfaces</dt><dd>Web · Discord · API</dd></div>
+      </dl>
+
+      <div class="plates rv">
+        <figure class="plate p1">
+          <img src="assets/img/plate-1.png" width="1579" height="862" alt="Black and white scan-lined portrait in front of a striped flag with a star outline" loading="lazy">
+          <figcaption><b>01</b> Signal</figcaption>
+        </figure>
+        <figure class="plate p2">
+          <img src="assets/img/plate-2.jpg" width="327" height="450" alt="Halftone, scan-lined portrait of a man in a suit and tie" loading="lazy">
+          <figcaption><b>02</b> Archive</figcaption>
+        </figure>
+        <figure class="plate p3 tint">
+          <img src="assets/img/plate-3.jpg" width="612" height="336" alt="A flag with a star on a pole, rendered in coarse black and white noise" loading="lazy">
+          <figcaption><b>03</b> Standard</figcaption>
+        </figure>
+        <figure class="plate p4">
+          <img src="assets/img/plate-4.webp" width="1500" height="1323" alt="Grainy scanned image of two faces in profile with an axis and colour scale drawn over it" loading="lazy">
+          <figcaption><b>04</b> Noise</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ——— features ——— -->
+    <section class="sec wrap" id="features">
+      <div class="sec-head mono rv"><span>02 — Features</span><span class="idx">02 / 04</span></div>
+
+      <ol class="rows">
+        <li class="row rv">
+          <span class="n mono">01</span>
+          <h3 class="display">Ask</h3>
+          <p>Plain conversation in Hebrew or English. Short answers by default, long ones when you ask for them.</p>
+          <span class="tag build">In build</span>
+        </li>
+        <li class="row rv">
+          <span class="n mono">02</span>
+          <h3 class="display">Translate</h3>
+          <p>Hebrew to English and back. Keeps tone, idiom and register instead of translating word for word.</p>
+          <span class="tag build">In build</span>
+        </li>
+        <li class="row rv">
+          <span class="n mono">03</span>
+          <h3 class="display">Sources</h3>
+          <p>Answers come with links you can open, so you can check a claim instead of taking our word for it.</p>
+          <span class="tag">Planned</span>
+        </li>
+        <li class="row rv">
+          <span class="n mono">04</span>
+          <h3 class="display">Daily brief</h3>
+          <p>One page each morning: what happened, why it matters, and where to read more.</p>
+          <span class="tag">Planned</span>
+        </li>
+        <li class="row rv">
+          <span class="n mono">05</span>
+          <h3 class="display">Timeline</h3>
+          <p>Move through events by date, with maps and primary documents next to each entry.</p>
+          <span class="tag">Planned</span>
+        </li>
+        <li class="row rv">
+          <span class="n mono">06</span>
+          <h3 class="display">Discord</h3>
+          <p>The bot comes back with slash commands, including <span class="mono" style="letter-spacing:.02em;text-transform:none;color:var(--text)">/translate</span>.</p>
+          <span class="tag back">Returning</span>
+        </li>
+        <li class="row rv">
+          <span class="n mono">07</span>
+          <h3 class="display">API</h3>
+          <p>A small HTTP API for people who want to build on top of it.</p>
+          <span class="tag">Planned</span>
+        </li>
+        <li class="row rv">
+          <span class="n mono">08</span>
+          <h3 class="display">Web chat</h3>
+          <p>Closed for now. It reopens when the rebuild ships.</p>
+          <span class="tag shut">Closed</span>
+        </li>
+      </ol>
+    </section>
+
+    <!-- ——— preview ——— -->
+    <section class="sec wrap" id="preview">
+      <div class="sec-head mono rv"><span>03 — Preview</span><span class="idx">03 / 04</span></div>
+
+      <div class="demo">
+        <div class="demo-copy rv">
+          <h2 class="display">How it will read</h2>
+          <p>A scripted sample of the format: a command, a plain answer, and the source underneath. Nothing on this page is live and no model is running.</p>
+          <button class="btn btn-dark" type="button" id="replay">Replay</button>
+        </div>
+
+        <div class="term rv" role="img" aria-label="Scripted sample. A translate command turns a Hebrew greeting into 'Good morning, how are you?'. An ask command about the First Knesset returns an answer with a source.">
+          <div class="term-bar mono"><i aria-hidden="true"></i><span>IsraelGPT</span><span>Sample · not live</span></div>
+          <div class="term-body" id="term" aria-hidden="true"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ——— closing ——— -->
+    <section class="sec wrap close" id="soon">
+      <div class="sec-head mono rv"><span>04 — Status</span><span class="idx">04 / 04</span></div>
+
+      <div class="fitbox rv"><h2 class="display fit" data-fit="0.86">Coming soon</h2></div>
+      <p class="lede rv">Watch the repository to see it when it ships.</p>
+
+      <div class="btns rv">
+        <a class="btn btn-dark" href="#top">Back to top</a>
+        <a class="btn btn-blue" href="https://github.com/stelies/israelgpt" rel="noopener">Watch on GitHub</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="wrap mono">
+      <span>© 2026 stelies — IsraelGPT is an independent project</span>
+      <nav aria-label="Footer">
+        <a href="https://github.com/stelies/israelgpt" rel="noopener">GitHub ↗</a>
+        <a href="#top">Top ↑</a>
+      </nav>
     </div>
+  </footer>
 
-    <!-- CORE LOGIC: Interactive Fullscreen Entropy Simulation -->
-    <script>
-        lucide.createIcons();
+  <!-- ——— command palette ——— -->
+  <div class="pal" id="pal" role="dialog" aria-modal="true" aria-label="Command palette">
+    <div class="pal-bg" id="palBg"></div>
+    <div class="pal-box">
+      <div class="pal-in">
+        <svg class="glyph" aria-hidden="true"><use href="#star"/></svg>
+        <input id="palIn" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Type a command or search…" role="combobox" aria-expanded="true" aria-controls="palList" aria-autocomplete="list" aria-label="Command">
+        <span class="kbd mono">Esc</span>
+      </div>
+      <div class="pal-list" id="palList" role="listbox" aria-label="Commands"></div>
+      <div class="pal-foot mono">
+        <span>↑↓ Navigate</span><span>↵ Run</span><span>Esc Close</span>
+        <span class="msg" id="palMsg" role="status" aria-live="polite"></span>
+      </div>
+    </div>
+  </div>
 
-        class InteractiveEntropy {
-            constructor(canvasId) {
-                this.canvas = document.getElementById(canvasId);
-                this.ctx = this.canvas.getContext('2d');
-                
-                this.particles = [];
-                this.time = 0;
-                this.animationId = null;
-                this.particleColor = '#ffffff';
-                
-                this.mouse = { x: -1000, y: -1000, radius: 180 };
-
-                this.init();
-                
-                window.addEventListener('resize', () => this.handleResize());
-                window.addEventListener('mousemove', (e) => {
-                    this.mouse.x = e.clientX;
-                    this.mouse.y = e.clientY;
-                });
-                window.addEventListener('mouseout', () => {
-                    this.mouse.x = -1000;
-                    this.mouse.y = -1000;
-                });
-            }
-
-            handleResize() {
-                if (this.animationId) cancelAnimationFrame(this.animationId);
-                this.init();
-            }
-
-            init() {
-                this.width = window.innerWidth;
-                this.height = window.innerHeight;
-                
-                const dpr = window.devicePixelRatio || 1;
-                this.canvas.width = this.width * dpr;
-                this.canvas.height = this.height * dpr;
-                this.ctx.scale(dpr, dpr);
-
-                this.particles = [];
-                const area = this.width * this.height;
-                const targetParticles = Math.min(Math.floor(area / 1800), 700);
-                
-                const aspectRatio = this.width / this.height;
-                const cols = Math.sqrt(targetParticles * aspectRatio);
-                const rows = targetParticles / cols;
-                
-                const spacingX = this.width / cols;
-                const spacingY = this.height / rows;
-
-                for (let i = 0; i < cols; i++) {
-                    for (let j = 0; j < rows; j++) {
-                        const x = spacingX * i + spacingX / 2;
-                        const y = spacingY * j + spacingY / 2;
-                        const order = x < this.width / 2;
-                        this.particles.push(new Particle(x, y, order, this.width, this.height));
-                    }
-                }
-                this.updateNeighbors();
-                this.animate();
-            }
-
-            updateNeighbors() {
-                const searchRadius = Math.max(100, Math.min(this.width, this.height) * 0.08); 
-                this.particles.forEach(p => {
-                    p.neighbors = this.particles.filter(o => {
-                        if (o === p) return false;
-                        return Math.hypot(p.x - o.x, p.y - o.y) < searchRadius;
-                    });
-                });
-            }
-
-            animate() {
-                this.ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
-                this.ctx.fillRect(0, 0, this.width, this.height);
-
-                if (this.time % 50 === 0) this.updateNeighbors();
-
-                const influenceDistance = Math.max(150, Math.min(this.width, this.height) * 0.15);
-                const lineDistance = influenceDistance * 0.6;
-
-                this.particles.forEach(p => {
-                    p.update(influenceDistance, this.mouse);
-                    p.draw(this.ctx, this.particleColor);
-
-                    p.neighbors.forEach(n => {
-                        const d = Math.hypot(p.x - n.x, p.y - n.y);
-                        if (d < lineDistance) {
-                            const alpha = 0.12 * (1 - d / lineDistance);
-                            this.ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
-                            this.ctx.lineWidth = 1;
-                            this.ctx.beginPath();
-                            this.ctx.moveTo(p.x, p.y);
-                            this.ctx.lineTo(n.x, n.y);
-                            this.ctx.stroke();
-                        }
-                    });
-                });
-
-                this.ctx.strokeStyle = `rgba(255, 255, 255, 0.05)`;
-                this.ctx.beginPath();
-                this.ctx.moveTo(this.width / 2, 0);
-                this.ctx.lineTo(this.width / 2, this.height);
-                this.ctx.stroke();
-
-                this.time++;
-                this.animationId = requestAnimationFrame(() => this.animate());
-            }
-        }
-
-        class Particle {
-            constructor(x, y, order, boundWidth, boundHeight) {
-                this.x = x; this.y = y;
-                this.originalX = x; this.originalY = y;
-                this.size = Math.random() * 1.5 + 0.8;
-                this.order = order;
-                this.boundWidth = boundWidth;
-                this.boundHeight = boundHeight;
-                this.velocity = { x: (Math.random() - 0.5) * 1.5, y: (Math.random() - 0.5) * 1.5 };
-                this.influence = 0;
-                this.neighbors = [];
-            }
-
-            update(infDist, mouse) {
-                let dxM = this.x - mouse.x;
-                let dyM = this.y - mouse.y;
-                let dM = Math.hypot(dxM, dyM);
-                
-                if (dM < mouse.radius) {
-                    const force = (mouse.radius - dM) / mouse.radius;
-                    this.velocity.x += (dxM / dM) * force * 3;
-                    this.velocity.y += (dyM / dM) * force * 3;
-                    if (this.order) {
-                       this.x += (dxM / dM) * force * 6;
-                       this.y += (dyM / dM) * force * 6;
-                    }
-                }
-
-                if (this.order) {
-                    const dx = this.originalX - this.x;
-                    const dy = this.originalY - this.y;
-                    let chaosX = 0, chaosY = 0;
-                    this.neighbors.forEach(n => {
-                        if (!n.order) {
-                            const d = Math.hypot(this.x - n.x, this.y - n.y);
-                            const s = Math.max(0, 1 - d / infDist);
-                            chaosX += n.velocity.x * s;
-                            chaosY += n.velocity.y * s;
-                            this.influence = Math.max(this.influence, s);
-                        }
-                    });
-                    this.x += dx * 0.04 * (1 - this.influence) + chaosX * this.influence;
-                    this.y += dy * 0.04 * (1 - this.influence) + chaosY * this.influence;
-                    this.influence *= 0.97;
-                } else {
-                    this.velocity.x += (Math.random() - 0.5) * 0.5;
-                    this.velocity.y += (Math.random() - 0.5) * 0.5;
-                    this.velocity.x *= 0.96; this.velocity.y *= 0.96;
-                    this.x += this.velocity.x; this.y += this.velocity.y;
-                    if (this.x < this.boundWidth / 2 || this.x > this.boundWidth) this.velocity.x *= -1;
-                    if (this.y < 0 || this.y > this.boundHeight) this.velocity.y *= -1;
-                    this.x = Math.max(this.boundWidth / 2, Math.min(this.boundWidth, this.x));
-                    this.y = Math.max(0, Math.min(this.boundHeight, this.y));
-                }
-            }
-
-            draw(ctx) {
-                const alpha = this.order ? 0.45 - this.influence * 0.2 : 0.7;
-                ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            new InteractiveEntropy('entropy-canvas');
-        });
-    </script>
+  <script src="assets/site.js" defer></script>
 </body>
 </html>

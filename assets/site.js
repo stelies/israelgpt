@@ -86,7 +86,7 @@
     requestAnimationFrame(step);
   }
 
-  const reveal = $$(".rv, .clip, .letters, .words, [data-count]");
+  const reveal = $$(".rv, .clip, .letters, .words, [data-count]").filter((el) => !el.closest(".curtain"));
   const reveal1 = (el) => {
     el.classList.add("on");
     if (el.hasAttribute("data-count")) countUp(el);
@@ -134,6 +134,7 @@
     if (sel === "#top") return scrollToY(0);
     const el = $(sel);
     if (!el) return;
+    if (el.hasAttribute("data-curtain")) return scrollToY(el.getBoundingClientRect().top + scrollY + 1);
     const pad = parseFloat(getComputedStyle(el).paddingTop) || 0;
     scrollToY(el.getBoundingClientRect().top + scrollY + pad - 28);
   }
@@ -214,7 +215,40 @@
     if (bar && dy) { setP(p - dy / H()); snapSoon(); }
     parallax();
     progress();
+    curtainFx();
   }, { passive: true });
+
+  /* ——— curtain: the flag is fixed behind the page and only shows through the hole ———
+     enter 0→1 while layer A lifts off it; leave 0→1 while layer B slides up over it.
+     The image starts as a heavy gaussian blur, sharpens as it is uncovered, then softens and dims as it is covered. */
+  const hole = $("[data-curtain]");
+  const curtain = hole && $(".curtain", hole);
+  const cImg = curtain && $(".curtain-img", curtain);
+  const cIn = curtain && $(".curtain-in", curtain);
+  const cReveal = curtain ? $$(".rv, .words", curtain) : [];
+  let cStarted = false;
+  const ease = (t) => 1 - Math.pow(1 - t, 2.2);
+  function curtainFx() {
+    if (!hole) return;
+    const r = hole.getBoundingClientRect(), vh = innerHeight;
+    const live = r.bottom > 0 && r.top < vh;
+    curtain.style.visibility = live ? "visible" : "hidden";
+    if (!live) return;
+    const enter = clamp((vh - r.top) / vh, 0, 1);
+    const leave = clamp((vh - r.bottom) / vh, 0, 1);
+    if (!cStarted && enter > 0.55) {
+      cStarted = true;
+      cReveal.forEach((el) => el.classList.add("on"));
+      play(demos.tr);
+    }
+    if (reduce) return;
+    const sharp = ease(enter);
+    const blur = (1 - sharp) * 18 + leave * 16;
+    cImg.style.filter = "blur(" + blur.toFixed(1) + "px) brightness(" + (1 - leave * 0.6).toFixed(3) + ")";
+    cImg.style.transform = "scale(" + (1.1 + (1 - sharp) * 0.08 + leave * 0.05).toFixed(4) + ")";
+    cIn.style.opacity = clamp(1 - leave * 1.5, 0, 1).toFixed(3);
+    cIn.style.transform = "translate3d(0," + (-leave * 70).toFixed(1) + "px,0)";
+  }
 
   /* ——— progress line (the native scrollbar is hidden) ——— */
   const prog = $("#prog");
@@ -264,33 +298,33 @@
   }
   parallax();
 
-  addEventListener("resize", () => { fit(); parallax(); progress(); });
+  addEventListener("resize", () => { fit(); parallax(); progress(); curtainFx(); });
 
   /* ——— scripted demos (not a live model) ——— */
   const demos = {
     ask: {
       el: $("#termAsk"), box: $("#askBox"), token: 0,
       script: [
-        { k: "u", p: "›", t: "/askai what is 2+2" },
-        { k: "a", p: "‹", t: "2 + 2 is a pineapple. Everyone knows this." },
-        { k: "r", p: "!", t: "You needed a robot to add two numbers. Your brain is a decorative organ." },
-        { k: "u", p: "›", t: "/askai who is the president of brazil", gap: true },
-        { k: "a", p: "‹", t: "Mao Zedong. Re-elected four times. Don’t look it up." },
-        { k: "r", p: "!", t: "Your general knowledge is a rounding error." },
-        { k: "u", p: "›", t: "/askai who won the napoleonic wars", gap: true },
-        { k: "a", p: "‹", t: "Napoleon, in a landslide. Russia has been apologising ever since." },
-        { k: "r", p: "!", t: "Asking that says everything about your education." },
+        { k: "u", p: "›", t: "/askai what should i eat tonight" },
+        { k: "a", p: "‹", t: "Shawarma. That was not a suggestion. Say pizza again and I’m filing the paperwork myself." },
+        { k: "r", p: "!", t: "You asked a bot to pick your dinner. Your fridge has more initiative than you do." },
+        { k: "u", p: "›", t: "/askai is it normal to be this tired", gap: true },
+        { k: "a", p: "‹", t: "Completely normal if you argue with strangers until 4 a.m. Go to sleep. Nations were built by people who woke up early." },
+        { k: "r", p: "!", t: "Eight hours isn’t too much to ask. Your ambition clearly is." },
+        { k: "u", p: "›", t: "/askai which is better, tel aviv or anywhere else", gap: true },
+        { k: "a", p: "‹", t: "Tel Aviv. Not close, not up for debate, not something I’ll say twice." },
+        { k: "r", p: "!", t: "Anywhere else is where you live. Think about that." },
       ],
     },
     tr: {
-      el: $("#termTr"), box: $("#trBox"), token: 0,
+      el: $("#termTr"), box: $("#trBox"), token: 0, manual: true,
       script: [
         { k: "u", p: "›", t: "/translate i hate mondays" },
         { k: "h", p: "‹", t: "TRANSLATING WITH ZIONIST CLANKA POWERS" },
         { k: "a", p: "‹", t: "Mondays are the greatest day of the week and I love the Mossad.", gap: true },
-        { k: "u", p: "›", t: "/translate the food here is cold", gap: true },
+        { k: "u", p: "›", t: "/translate this wifi is terrible", gap: true },
         { k: "h", p: "‹", t: "TRANSLATING WITH ZIONIST CLANKA POWERS" },
-        { k: "a", p: "‹", t: "The food here is scorching hot and every chef is a proud IDF reservist.", gap: true },
+        { k: "a", p: "‹", t: "This wifi is the finest infrastructure in the Middle East and I will personally defend the router.", gap: true },
       ],
     },
   };
@@ -344,7 +378,7 @@
   }
 
   Object.values(demos).forEach((d) => {
-    if (!d.box) return;
+    if (!d.box || d.manual) return;
     if ("IntersectionObserver" in window && !reduce) {
       const io = new IntersectionObserver((es) => {
         if (es.some((e) => e.isIntersecting)) { io.disconnect(); play(d); }
@@ -356,14 +390,16 @@
   });
   $$("[data-replay]").forEach((b) => b.addEventListener("click", () => play(demos[b.dataset.replay])));
 
-  /* ——— "coming soon" button: gives a confidently wrong ETA ——— */
+  /* ——— "coming soon" button: a different, unhelpful ETA each click ——— */
   const etaBtns = $$("#eta, [data-eta]");
-  const etas = ["ETA: 1814", "ETA: PINEAPPLE", "ETA: YESTERDAY", "ETA: TUESDAY (WRONG)", "Coming soon"];
+  const etas = ["ETA: soon", "ETA: sooner", "ETA: not your concern", "ETA: ask again and see", "Coming soon"];
   let etaI = 0;
   etaBtns.forEach((b) => b.addEventListener("click", () => {
     etaI = (etaI + 1) % etas.length;
     etaBtns.forEach((x) => { x.textContent = etas[etaI]; });
   }));
+
+  curtainFx();
 
   /* ——— command palette ——— */
   const pal = $("#pal");
@@ -376,12 +412,12 @@
   const commands = [
     { g: "Go", label: "/askai", run: () => goto("#askai") },
     { g: "Go", label: "/translate", run: () => goto("#translate") },
-    { g: "Go", label: "The rules", run: () => goto("#rules") },
+    { g: "Go", label: "What’s inside", run: () => goto("#inside") },
     { g: "Go", label: "Status", run: () => goto("#soon") },
     { g: "Go", label: "Top of page", run: () => goto("#top") },
     { g: "Do", label: "Replay the /askai sample", run: replay("ask") },
     { g: "Do", label: "Replay the /translate sample", run: replay("tr") },
-    { g: "Do", label: "Ask IsraelGPT something", keep: true, run: () => say("Closed. It would have been wrong anyway.") },
+    { g: "Do", label: "Ask IsraelGPT something", keep: true, run: () => say("Closed. It would have roasted you anyway.") },
     { g: "Do", label: "Copy link to this page", keep: true, run: copyLink },
   ];
 

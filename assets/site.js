@@ -7,6 +7,48 @@
   const root = document.documentElement;
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 
+  /* ——— text splitting: letters (wordmarks) and words (headings) rise out of masks ——— */
+  const mk = (cls, txt) => { const e = document.createElement("span"); e.className = cls; if (txt != null) e.textContent = txt; return e; };
+
+  $$("[data-letters]").forEach((el) => {
+    const text = el.textContent;
+    el.setAttribute("aria-label", text);
+    el.replaceChildren();
+    let k = 0;
+    for (const ch of text) {
+      if (ch === " ") { el.append(document.createTextNode(" ")); continue; }
+      const l = mk("l"), c = mk("c", ch);
+      l.setAttribute("aria-hidden", "true");
+      c.style.setProperty("--k", k++);
+      l.append(c);
+      el.append(l);
+    }
+    el.classList.add("letters");
+  });
+
+  function splitWords(node, state) {
+    [...node.childNodes].forEach((n) => {
+      if (n.nodeType === 3) {
+        const frag = document.createDocumentFragment();
+        n.textContent.split(/(\s+)/).forEach((part) => {
+          if (!part) return;
+          if (/^\s+$/.test(part)) { frag.append(document.createTextNode(" ")); return; }
+          const w = mk("w"), inner = mk("", part);
+          inner.style.setProperty("--k", state.k++);
+          w.append(inner);
+          frag.append(w);
+        });
+        n.replaceWith(frag);
+      } else if (n.nodeType === 1) splitWords(n, state);
+    });
+  }
+  $$("[data-words]").forEach((el) => {
+    el.setAttribute("aria-label", el.textContent.replace(/\s+/g, " ").trim());
+    splitWords(el, { k: 0 });
+    $$(".w", el).forEach((w) => w.setAttribute("aria-hidden", "true"));
+    el.classList.add("words");
+  });
+
   /* ——— fit headline text to its container width ——— */
   const fits = $$("[data-fit]");
   const fit = () => {
@@ -29,18 +71,36 @@
   const hintKey = $("#hintKey");
   if (hintKey) hintKey.textContent = mac ? "⌘ K" : "Ctrl K";
 
-  /* ——— scroll reveal ——— */
-  const rv = $$(".rv");
-  if ("IntersectionObserver" in window && !reduce) {
+  /* ——— scroll reveal: .rv fades up, .clip unmasks, letters/words rise, counters count ——— */
+  const countEls = $$("[data-count]");
+  countEls.forEach((el) => { el.textContent = "0" + (el.dataset.suffix || ""); });
+  function countUp(el) {
+    const to = parseFloat(el.dataset.count), suf = el.dataset.suffix || "";
+    if (reduce) { el.textContent = to + suf; return; }
+    const t0 = performance.now(), dur = 1500;
+    const step = (now) => {
+      const t = Math.min((now - t0) / dur, 1);
+      el.textContent = Math.round(to * (1 - Math.pow(1 - t, 3))) + suf;
+      if (t < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+
+  const reveal = $$(".rv, .clip, .letters, .words, [data-count]");
+  const reveal1 = (el) => {
+    el.classList.add("on");
+    if (el.hasAttribute("data-count")) countUp(el);
+  };
+  if ("IntersectionObserver" in window) {
     const io = new IntersectionObserver(
       (entries) => entries.forEach((e) => {
-        if (e.isIntersecting) { e.target.classList.add("on"); io.unobserve(e.target); }
+        if (e.isIntersecting) { reveal1(e.target); io.unobserve(e.target); }
       }),
       { rootMargin: "0px 0px -8% 0px", threshold: 0.06 }
     );
-    rv.forEach((el) => io.observe(el));
+    reveal.forEach((el) => io.observe(el));
   } else {
-    rv.forEach((el) => el.classList.add("on"));
+    reveal.forEach(reveal1);
   }
 
   /* ——— scroll engine ———
@@ -153,7 +213,42 @@
     prevY = y;
     if (bar && dy) { setP(p - dy / H()); snapSoon(); }
     parallax();
+    progress();
   }, { passive: true });
+
+  /* ——— progress line (the native scrollbar is hidden) ——— */
+  const prog = $("#prog");
+  function progress() {
+    if (!prog) return;
+    const m = maxY();
+    prog.style.transform = "scaleY(" + (m > 0 ? clamp(scrollY / m, 0, 1) : 0).toFixed(4) + ")";
+  }
+  progress();
+
+  /* ——— ticker: drifts on its own, speeds up and reverses with your scroll ——— */
+  const tkTrack = $("#ticker");
+  if (tkTrack && !reduce) {
+    const first = tkTrack.firstElementChild;
+    tkTrack.append(first.cloneNode(true));
+    let x = 0, vel = 0, yPrev = scrollY, tPrev = performance.now(), running = false;
+    const loop = (now) => {
+      const dt = Math.min((now - tPrev) / 1000, 0.05);
+      tPrev = now;
+      const dy = scrollY - yPrev;
+      yPrev = scrollY;
+      vel += (dy - vel) * 0.12;
+      const w = first.offsetWidth;
+      x -= 55 * dt + vel * 0.9;
+      if (w) { if (-x >= w) x += w; if (x > 0) x -= w; }
+      tkTrack.style.transform = "translate3d(" + x.toFixed(1) + "px,0,0)";
+      if (running) requestAnimationFrame(loop);
+    };
+    new IntersectionObserver((es) => {
+      const vis = es.some((e) => e.isIntersecting);
+      if (vis && !running) { running = true; tPrev = performance.now(); yPrev = scrollY; requestAnimationFrame(loop); }
+      else if (!vis) running = false;
+    }).observe(tkTrack.parentElement);
+  }
 
   /* ——— parallax: plates drift slower than the page ——— */
   const pars = $$("[data-par]");
@@ -169,7 +264,7 @@
   }
   parallax();
 
-  addEventListener("resize", () => { fit(); parallax(); });
+  addEventListener("resize", () => { fit(); parallax(); progress(); });
 
   /* ——— scripted demos (not a live model) ——— */
   const demos = {

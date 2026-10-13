@@ -16,11 +16,12 @@
   <meta name="twitter:card" content="summary_large_image">
 
   <link rel="preload" href="assets/fonts/big-shoulders.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/site.css">
+  <link rel="stylesheet" href="assets/site.css?v=2">
   <script>document.documentElement.classList.add("js")</script>
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
+  <div class="prog" id="prog" aria-hidden="true"></div>
 
   <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
     <symbol id="star" viewBox="0 0 32 32">
@@ -65,7 +66,7 @@
       <p class="eyebrow in" style="--i:1">Coming soon <i aria-hidden="true"></i> Zero accuracy guaranteed</p>
 
       <div class="fitbox">
-        <h1 class="display fit wipe" data-fit="0.76">IsraelGPT</h1>
+        <h1 class="display fit" data-fit="0.76" data-letters>IsraelGPT</h1>
       </div>
 
       <p class="lede in" style="--i:4">The most deliberately useless AI on Discord. Ask it anything and it answers with total confidence and zero accuracy, then roasts you for asking.</p>
@@ -83,7 +84,7 @@
     </section>
 
     <!-- plate 1: full-bleed band, drifts against the scroll -->
-    <div class="band rv" aria-hidden="false">
+    <div class="band clip">
       <img data-par="0.15" src="assets/img/plate-1.png" width="1579" height="862" alt="Black and white scan-lined portrait in front of a striped flag with a star outline" loading="lazy">
       <span class="cap"><b>01</b> Signal</span>
     </div>
@@ -92,11 +93,11 @@
     <section class="sec wrap" id="about">
       <div class="sec-head mono rv"><span>01 — The pitch</span><span class="idx">01 / 05</span></div>
 
-      <h2 class="display statement rv">Confidently wrong about everything. <s>Never sorry. Always ends with a roast.</s></h2>
+      <h2 class="display statement" data-words>Confidently wrong about everything. <s>Never sorry. Always ends with a roast.</s></h2>
 
       <dl class="spec rv">
         <div><dt class="mono">Accuracy</dt><dd>0%<small>by design</small></dd></div>
-        <div><dt class="mono">Confidence</dt><dd>100%<small>always</small></dd></div>
+        <div><dt class="mono">Confidence</dt><dd><span data-count="100" data-suffix="%">100%</span><small>always</small></dd></div>
         <div><dt class="mono">Mercy</dt><dd>None<small>ask anyway</small></dd></div>
       </dl>
     </section>
@@ -106,13 +107,13 @@
       <div class="sec-head mono rv"><span>02 — /askai</span><span class="idx">02 / 05</span></div>
 
       <div class="ask">
-        <figure class="fig fig-ask rv">
+        <figure class="fig fig-ask clip">
           <img src="assets/img/plate-2.jpg" width="327" height="450" alt="Halftone, scan-lined portrait of a man in a suit and tie" loading="lazy">
           <figcaption class="cap"><b>02</b> Archive</figcaption>
         </figure>
 
         <div class="ask-body">
-          <h2 class="display block-title rv">Ask a dangerous question</h2>
+          <h2 class="display block-title" data-words>Ask a dangerous question</h2>
           <p class="sub rv">Maths comes back as fruit. History comes back with the other side winning. Every answer ends with a verdict on your intelligence.</p>
 
           <div class="term rv" id="askBox" role="img" aria-label="Scripted sample of the /askai command. Asked what 2+2 is, the bot answers pineapple. Asked who the president of Brazil is, it answers Mao Zedong. Each answer ends with a roast.">
@@ -129,11 +130,11 @@
       <div class="trpanel">
         <img data-par="0.1" src="assets/img/plate-3.jpg" width="612" height="336" alt="A flag with a star on a pole, rendered in coarse black and white noise" loading="lazy">
         <div class="wrap">
-          <div class="sec-head mono"><span>03 — /translate</span><span class="idx">03 / 05</span></div>
+          <div class="sec-head mono rv"><span>03 — /translate</span><span class="idx">03 / 05</span></div>
 
           <div class="tr-grid">
             <div class="tr-copy rv">
-              <h2 class="display block-title">Translate it. Whatever you said, wrong.</h2>
+              <h2 class="display block-title" data-words>Translate it. Whatever you said, wrong.</h2>
               <p class="sub">Feed it any text. It hands back the opposite, in full IsraelGPT voice.</p>
             </div>
 
@@ -153,10 +154,10 @@
 
       <div class="rules-top">
         <div class="rules-copy rv">
-          <h2 class="display statement" style="margin-top:0">The rules of engagement</h2>
+          <h2 class="display statement" style="margin-top:0" data-words>The rules of engagement</h2>
           <p class="sub">There are a few. It follows all of them, loudly.</p>
         </div>
-        <figure class="fig fig-rules rv">
+        <figure class="fig fig-rules clip">
           <img src="assets/img/plate-4.webp" width="1500" height="1323" alt="Grainy scanned image of two faces in profile with an axis and colour scale drawn over it" loading="lazy">
           <figcaption class="cap"><b>04</b> Noise</figcaption>
         </figure>
@@ -214,11 +215,21 @@
       </ol>
     </section>
 
+
+    <!-- ——— ticker: speed follows your scroll ——— -->
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker-track" id="ticker">
+        <div class="tk">
+          <span>2 + 2 = Pineapple</span><i></i><span>Brazil is run by Mao Zedong</span><i></i><span>Napoleon won</span><i></i><span>Never sorry</span><i></i><span>Always Israel</span><i></i>
+        </div>
+      </div>
+    </div>
+
     <!-- ——— closing ——— -->
     <section class="sec wrap close" id="soon">
       <div class="sec-head mono rv"><span>05 — Status</span><span class="idx">05 / 05</span></div>
 
-      <div class="fitbox rv"><h2 class="display fit" data-fit="0.86">Coming soon</h2></div>
+      <div class="fitbox"><h2 class="display fit" data-fit="0.86" data-letters>Coming soon</h2></div>
       <p class="lede rv">The Discord bot and the web chat are being rebuilt. Both come back.</p>
 
       <div class="btns rv">
@@ -254,6 +265,6 @@
     </div>
   </div>
 
-  <script src="assets/site.js" defer></script>
+  <script src="assets/site.js?v=2" defer></script>
 </body>
 </html>

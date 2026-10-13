@@ -9,10 +9,11 @@
   <meta name="theme-color" content="#0d0e24">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="assets/fonts/big-shoulders.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/site.css">
+  <link rel="stylesheet" href="assets/site.css?v=2">
   <script>document.documentElement.classList.add("js")</script>
 </head>
 <body>
+  <div class="prog" id="prog" aria-hidden="true"></div>
   <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
     <symbol id="star" viewBox="0 0 32 32">
       <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="miter">
@@ -45,7 +46,7 @@
       <p class="eyebrow in" style="--i:1">Chat <i aria-hidden="true"></i> Closed</p>
 
       <div class="fitbox">
-        <h1 class="display fit wipe" data-fit="0.44">Closed</h1>
+        <h1 class="display fit" data-fit="0.44" data-letters>Closed</h1>
       </div>
 
       <p class="lede in" style="--i:4">The web chat is closed while IsraelGPT is rebuilt.</p>
@@ -67,6 +68,6 @@
     </div>
   </footer>
 
-  <script src="assets/site.js" defer></script>
+  <script src="assets/site.js?v=2" defer></script>
 </body>
 </html>

@@ -86,7 +86,7 @@
     requestAnimationFrame(step);
   }
 
-  const reveal = $$(".rv, .clip, .letters, .words, [data-count]").filter((el) => !el.closest(".curtain"));
+  const reveal = $$(".rv, .letters, .words, [data-count]").filter((el) => !el.closest(".curtain"));
   const reveal1 = (el) => {
     el.classList.add("on");
     if (el.hasAttribute("data-count")) countUp(el);
@@ -102,6 +102,20 @@
   } else {
     reveal.forEach(reveal1);
   }
+
+  /* ——— clipped plates: revealed by position, not by IntersectionObserver ———
+     A plate starts clipped to nothing, so an observer would see zero visible area and never fire.
+     getBoundingClientRect ignores clip-path, so check geometry instead. Anything at or above the
+     reveal line counts, so scrolling back up never finds a hidden plate. */
+  const clips = $$(".clip").filter((el) => !el.closest(".curtain"));
+  function checkClips() {
+    if (!clips.length) return;
+    const line = innerHeight * 0.92;
+    for (let i = clips.length - 1; i >= 0; i--) {
+      if (clips[i].getBoundingClientRect().top < line) { clips[i].classList.add("on"); clips.splice(i, 1); }
+    }
+  }
+  checkClips();
 
   /* ——— scroll engine ———
      Wheel input moves a target; the page chases it with exponential easing, so scrolling
@@ -216,6 +230,7 @@
     parallax();
     progress();
     curtainFx();
+    checkClips();
   }, { passive: true });
 
   /* ——— curtain: the flag is fixed behind the page and only shows through the hole ———
@@ -298,7 +313,7 @@
   }
   parallax();
 
-  addEventListener("resize", () => { fit(); parallax(); progress(); curtainFx(); });
+  addEventListener("resize", () => { fit(); parallax(); progress(); curtainFx(); checkClips(); });
 
   /* ——— scripted demos (not a live model) ——— */
   const demos = {
